@@ -1,11 +1,11 @@
 import { lazy } from "react";
 
-const home = {
-    path: "/",
-    name: "Home",
+const login = {
+    path: "/login",
+    name: "Login",
     exact: true,
     public: true,
     component: lazy(() => import("."))
 }
 
-export default home;
+export default login;

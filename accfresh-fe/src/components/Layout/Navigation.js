@@ -1,15 +1,16 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
+import routes from '../../../src/pages/routes';
 
 const Navigation = () => {
-    const pages = ["Home", "Contact", "Sing Up"];
-
     return (
         <div className="navigation-otr">
             <ul className="navigation-inr">
                 {
-                    pages.map((page, index) => (
+                    routes.map((route, index) => (
                         <li key={index} className={"navigation-li nav-li" + index}>
-                            <p className="nav-a heading-SB">{page}</p>
+                            <Link to={route.path} className="nav-a heading-SB "> {route.name} </Link>
                         </li>
                     ))
                 }

@@ -1,7 +1,7 @@
 import React from "react";
 
 import Navigation from "./Navigation";
-import SearchMain from "../SearchMain";
+import SearchMain from "./SearchMain";
 import Action from "./Action";
 
 const NavbarMain = () => {
