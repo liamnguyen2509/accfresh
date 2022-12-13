@@ -1,14 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+import { BrowserRouter } from "react-router-dom";
+
+// IMPORT CSS
+import './assets/libs/bootstrap/dist/css/bootstrap.min.css'
+import './assets/libs/owl.carousel/dist/assets/owl.carousel.css'
+import './assets/libs/owl.carousel/dist/assets/owl.theme.default.css'
+import './assets/libs/remixicon/fonts/remixicon.css'
+import './assets/fonts/fonts.css'
+import './assets/css/app.css'
+
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  <BrowserRouter>
     <App />
-  </React.StrictMode>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
