@@ -4,9 +4,10 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     username: String,
     email: String,
-    password: String
+    password: String,
+    authToken: String
 }, { timestamps: true });
 
-const User = mongoose.model('User', UserSchema);
+const User = mongoose.model('Users', UserSchema);
 
 module.exports = User;

@@ -19,9 +19,9 @@
     ],
     "basePath": "/api",
     "paths": {
-        "/user/login": {
+        "/user/authenticate": {
             "post": {
-              "description": "Login with email and password",
+              "description": "Authenticate with email and password",
               "parameters": [
                 {
                     "name": "User",
@@ -43,10 +43,13 @@
               ],
               "responses": {
                 "200": {
-                  "description": "OK"
+                    "description": "OK"
+                },
+                "400": {
+                    "description": "FAILED"
                 },
                 "default": {
-                  "description": "unexpected error"
+                    "description": "unexpected error"
                 }
               }
             }
