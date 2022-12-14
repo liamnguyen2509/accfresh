@@ -1,0 +1,55 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "ACCFRESH API",
+        "description": "A RESTAPI Portal for ACCFRESH Website",
+        "servers": [
+            { 
+                "url": "http://localhost:5000/", 
+                "description": "Local server"
+            }
+        ]
+    },
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "basePath": "/api",
+    "paths": {
+        "/user/login": {
+            "post": {
+              "description": "Login with email and password",
+              "parameters": [
+                {
+                    "name": "User",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "type": "object",
+                        "required": ["email", "password"],
+                        "properties": {
+                            "email": {
+                                "type": "string"
+                            },
+                            "password": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK"
+                },
+                "default": {
+                  "description": "unexpected error"
+                }
+              }
+            }
+        }
+    }
+}
