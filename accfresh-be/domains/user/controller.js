@@ -5,7 +5,7 @@ const { newAuthToken } = require('../../util/jwt');
 // models
 const User = require('./model');
 
-const validate = async (email, password) => {
+const validateUser = async (email, password) => {
     var emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     
     if (!email || !email.match(emailRegex)) return false;
@@ -32,4 +32,24 @@ const authenticateUser = async (email, password) => {
     }
 }
 
-module.exports = { validate, authenticateUser }
+const registerUser = async (username, email, password) => {
+    if (!username || !password) throw Error("Please enter your username or password.");
+
+    const fetchedUser = await User.findOne({ email });
+    if (fetchedUser) throw Error("Registering failed. Your email existing.");
+
+    const passwordHash = sha256(password);
+    const newUser = new User({
+        username,
+        email,
+        password: passwordHash,
+        authToken: newAuthToken()
+    });
+    let registedUser = await newUser.save().catch((err) => {
+        throw Error("Register new User failed.");
+    });
+    
+    return registedUser;
+}
+
+module.exports = { validateUser, authenticateUser, registerUser }

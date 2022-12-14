@@ -8,7 +8,7 @@ const LoginForm = () => {
                 <h4 className="text heading-h4">Login To AccFresh</h4>
                 <form className="form-main" method="post">
                     <div className="input-otr">
-                        <input className="input heading-SB" type="text" name="email" placeholder="email@domain.com" required />
+                        <input className="input heading-SB" type="email" name="email" placeholder="email@domain.com" required />
                     </div>
                     <div className="input-otr input-otr-2">
                         <input className="input heading-SB" type="password" name="password" placeholder="password" required />
