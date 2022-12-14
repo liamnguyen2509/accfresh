@@ -3,10 +3,11 @@ import React from "react";
 import Navigation from "./Navigation";
 import SearchMain from "./SearchMain";
 import Action from "./Action";
+import Cart from "./Cart";
 
 const NavbarMain = () => {
     return (
-        <div className="navbar-main">
+        <div className="navbar-main-2">
             <div className="container-fluid">
                 <div className="wrapper">
                     <div className="logo-otr">
@@ -15,8 +16,11 @@ const NavbarMain = () => {
                         </a>
                     </div>
                     <Navigation />
-                    <SearchMain />
-                    <Action />
+                    <div className="action-nav">
+                        <SearchMain />
+                        <Cart />
+                        <Action />
+                    </div>
                 </div>
             </div>
         </div>
