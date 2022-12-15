@@ -8,6 +8,6 @@ const UserSchema = new Schema({
     authToken: String
 }, { timestamps: true });
 
-const User = mongoose.model('Users', UserSchema);
+const User = mongoose.model('users', UserSchema);
 
 module.exports = User;

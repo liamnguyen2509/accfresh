@@ -18,7 +18,7 @@ const Profile = (props) => {
     return (
         <div className="profile-nav-main">
             <div className="profile-nav" onClick={onClickHandler}>
-                <p className="desc heading-SB">3.756 $</p>
+                <p className="desc heading-SB">0 $</p>
             </div>
             <div className={profileDropdownClasses}>
                 <div className="copy-icon-otr">
@@ -31,7 +31,7 @@ const Profile = (props) => {
                     </div>
                     <div className="balance">
                         <p className="text heading-S">Balance</p>
-                        <p className="price heading-L">3.756 $</p>
+                        <p className="price heading-L">0 $</p>
                     </div>
                 </div>
                 <ul className="link-profile-ul">

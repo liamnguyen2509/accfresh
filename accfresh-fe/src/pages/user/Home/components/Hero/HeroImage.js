@@ -5,7 +5,7 @@ const HeroImage = () => {
         <div className="col-img-inr">
             <div className="img-otr">
                 <a href="#">
-                    <img className="hero-img img-fluid" src="assets/img/hero-img-home-1.jpg" alt="hero-img" />
+                    <img className="hero-img img-fluid" src="assets/img/walmart.jpg" alt="hero-img" />
                 </a>
             </div>
         </div>

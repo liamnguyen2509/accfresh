@@ -9,7 +9,7 @@ import Profile from "./Profile";
 import AuthContext from "../../store/authContext";
 
 const NavbarMain = () => {
-    const context = useContext(AuthContext);
+    const authCtx = useContext(AuthContext);
 
     return (
         <div className="navbar-main-2">
@@ -25,9 +25,7 @@ const NavbarMain = () => {
                         <SearchMain />
                         <Action />
                         <Cart />
-                        {context.isLogged &&
-                            <Profile />
-                        }
+                        {authCtx.isLogged && <Profile />}
                     </div>
                 </div>
             </div>
