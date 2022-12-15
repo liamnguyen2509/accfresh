@@ -4,6 +4,7 @@ const AuthContext = createContext({
     isLogged: false,
     username: "",
     authToken: "",
+    isAdmin: false,
     onLogout: () => {},
     onLogin: (email, password) => {}
 });
@@ -12,6 +13,7 @@ export const AuthContextProvider = (props) => {
     const [isLogged, setIsLogged] = useState(false);
     const [username, setUsername] = useState("");
     const [authToken, setAuthToken] = useState("");
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const storedUserLogged = localStorage.getItem("isLogged");
@@ -25,11 +27,12 @@ export const AuthContextProvider = (props) => {
         setIsLogged(false);
     }
 
-    const loginHandler = (username, authToken) => {
+    const loginHandler = (username, authToken, isAdmin) => {
         localStorage.setItem("isLogged", "1");
         setIsLogged(true);
         setUsername(username);
         setAuthToken(authToken);
+        setIsAdmin(isAdmin);
     }
 
     return (
@@ -38,6 +41,7 @@ export const AuthContextProvider = (props) => {
                 isLogged: isLogged,
                 username: username,
                 authToken: authToken,
+                isAdmin: isAdmin,
                 onLogout: logoutHandler,
                 onLogin: loginHandler
             }}

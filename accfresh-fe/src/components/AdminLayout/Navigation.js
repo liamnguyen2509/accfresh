@@ -1,18 +1,18 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
-import routes from '../../../src/pages/routes';
+import routes from '../../pages/routes';
 import AuthContext from "../../store/authContext";
 
-const Navigation = () => {
+const AdminNavigation = () => {
     const context = useContext(AuthContext);
 
     return (
         <div className="navigation-otr">
             <ul className="navigation-inr">
                 {
-                    routes.filter(route => route.public === true && route.admin !== true).map((route, index) => { 
-                        if (route.name === "Login" || route.name === "Sign Up") {
+                    routes.filter(route => route.public === true && route.admin === true).map((route, index) => { 
+                        if (route.name === "Login") {
                             if (!context.isLogged) {
                                 return (
                                     <li key={index} className={"navigation-li nav-li" + index}>
@@ -35,4 +35,4 @@ const Navigation = () => {
     );
 }
 
-export default Navigation;
+export default AdminNavigation;

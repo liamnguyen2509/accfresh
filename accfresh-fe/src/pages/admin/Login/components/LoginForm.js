@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import { AuthenticateUser } from '../api';
+import { AuthenticateAdmin } from '../api';
 import AuthContext from "../../../../store/authContext";
 
 const LoginForm = () => {
@@ -15,13 +15,13 @@ const LoginForm = () => {
     const onSubmitHandler = (e) => {
         e.preventDefault();
 
-        AuthenticateUser(email, password)
+        AuthenticateAdmin(email, password)
         .then(res => {
-            const username = res.data.data.user.username;
-            const authToken = res.data.data.user.authToken;
-            context.onLogin(username, authToken, false);
+            const email = res.data.data.admin.email;
+            const authToken = res.data.data.admin.authToken;
+            context.onLogin(email, authToken, true);
 
-            navigate("/");
+            navigate("/admin");
             return true;
         })
         .catch(err => {
@@ -32,7 +32,7 @@ const LoginForm = () => {
     return (
         <div className="col-login-inr">
             <div className="content">
-                <h4 className="text heading-h4">Login To AccFresh</h4>
+                <h4 className="text heading-h4">Login To Portal</h4>
                 <form className="form-main" method="post" onSubmit={onSubmitHandler}>
                     <div className="input-otr">
                         <input className="input heading-SB" type="email" placeholder="email@domain.com" 
@@ -45,18 +45,6 @@ const LoginForm = () => {
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                             required />
-                    </div>
-                    <div className="check-main">
-                        <div className="check">
-                            {/* <label>
-                                <span className="check-inner">
-                                    <input type="checkbox" className="input-check opacity-0 absolute" />
-                                    <svg className="fill-current" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="#019DEA"/><path d="m10.334 14.643 7.66-7.66 1.179 1.178L10.333 17 5.03 11.697l1.179-1.179 4.125 4.125Z" fill="#fff"/></svg>
-                                </span>
-                                <span className="select-none heading-S">Remember Me</span>
-                            </label> */}
-                        </div>
-                        <Link to={"/forgot-password"} className="forget heading-SB"> Forgot Password? </Link>
                     </div>
                     <div className="action">
                         <input className="button heading-SB" type="submit" value="Login" />

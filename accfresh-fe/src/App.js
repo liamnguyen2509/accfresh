@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { Route, Routes } from "react-router-dom";
 
 import routes from "./pages/routes";
-import Spinner from './components/Layout/Spinner';
+import Spinner from './components/Spinner';
 
 const App = () => {
   return (

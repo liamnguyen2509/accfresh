@@ -21,10 +21,6 @@ const Profile = (props) => {
                 <p className="desc heading-SB">0 $</p>
             </div>
             <div className={profileDropdownClasses}>
-                <div className="copy-icon-otr">
-                    <p className="text heading-SB">13b9ebda035r178...</p>
-                    <i className="ri-file-copy-line copy-icon"></i>
-                </div>
                 <div className="balance-otr">
                     <div className="img-etherem">
                         <img src="/assets/img/perfect-money.png" alt="img" style={{ height: "50px" }} />

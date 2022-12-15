@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import Product from "./Product";
 
-import { GetProducts } from '../api';
+import { GetProducts } from '../../api';
 
 const FeatureSection = () => {
     const [products, setProducts] = useState([]);
@@ -10,11 +10,11 @@ const FeatureSection = () => {
 
     useEffect(() => {
         GetProducts()
-        .then(res => setProducts(res.data.data.products))
+        .then(res => setProducts(res.data.data.products.filter(product => product.isActive === true)))
         .catch(err => {
             setError({ type: "Error", message: err.response.data.message });
         });
-    }, [products]);
+    }, []);
 
     return (
         <div className="feature-main" style={{margin: "50px 0"}}>
