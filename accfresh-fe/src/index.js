@@ -12,12 +12,18 @@ import './assets/css/app.css'
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { AuthContextProvider } from './store/authContext';
+import { CartContextProvider } from './store/cartContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+  <AuthContextProvider>
+    <CartContextProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </CartContextProvider>
+  </AuthContextProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

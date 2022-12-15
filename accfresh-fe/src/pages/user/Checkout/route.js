@@ -1,8 +1,8 @@
 import { lazy } from "react";
 
 const login = {
-    path: "/login",
-    name: "Login",
+    path: "/checkout",
+    name: "Checkout",
     exact: true,
     public: false,
     component: lazy(() => import("."))

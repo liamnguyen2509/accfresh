@@ -1,0 +1,95 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "ACCFRESH API",
+        "description": "A RESTAPI Portal for ACCFRESH Website",
+        "servers": [
+            { 
+                "url": "http://localhost:5000/", 
+                "description": "Local server"
+            }
+        ]
+    },
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "basePath": "/api",
+    "paths": {
+        "/user/authenticate": {
+            "post": {
+              "description": "Authenticate with email and password",
+              "parameters": [
+                {
+                    "name": "User",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "type": "object",
+                        "required": ["email", "password"],
+                        "properties": {
+                            "email": {
+                                "type": "string"
+                            },
+                            "password": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400": {
+                    "description": "FAILED"
+                },
+                "default": {
+                    "description": "unexpected error"
+                }
+              }
+            }
+        },
+        "/user/signup": {
+            "post": {
+              "description": "Register a new User",
+              "parameters": [
+                {
+                    "name": "User",
+                    "in": "body",
+                    "schema": {
+                        "type": "object",
+                        "required": ["username", "email", "password"],
+                        "properties": {
+                            "username": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "password": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+              ],
+              "responses": {
+                "200": {
+                    "description": "OK"
+                },
+                "400": {
+                    "description": "FAILED"
+                },
+                "default": {
+                    "description": "unexpected error"
+                }
+              }
+            }
+        }
+    }
+}

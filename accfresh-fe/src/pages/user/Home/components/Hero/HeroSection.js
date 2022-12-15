@@ -5,7 +5,7 @@ import HeroImage from "./HeroImage";
 
 const HeroSection = () => {
     return (
-        <div className="hero-main">
+        <div className="hero-main" style={{padding: "50px 0"}}>
             <div className="container-fluid">
                 <div className="row row-custom">
                     <div className="col-lg-6 col-content-otr">
