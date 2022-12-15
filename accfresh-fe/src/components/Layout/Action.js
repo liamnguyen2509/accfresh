@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 
+import AuthContext from '../../store/authContext'; 
+
 const Action = () => {
+    const context = useContext(AuthContext);
+
     return (
         <div className="action right-space">
-            <Link to={"/login"} className="btn-primary-1 heading-SB"> Login </Link>
-            {/* <a href="./Pages/Connect-Wallet.html" className="btn-primary-2 heading-SB btn-wallet">Connect PM</a> */}
+            {!context.isLogged && <Link to={"/login"} className="btn-primary-1 heading-SB"> Login </Link>}
+            {context.isLogged && <Link to={"/connect-pm"} className="btn-primary-1 heading-SB"> Connect PM </Link>}
         </div>
     );
 }

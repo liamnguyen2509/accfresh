@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import Navigation from "./Navigation";
 import SearchMain from "./SearchMain";
 import Action from "./Action";
 import Cart from "./Cart";
+import Profile from "./Profile";
+
+import AuthContext from "../../store/authContext";
 
 const NavbarMain = () => {
+    const context = useContext(AuthContext);
+
     return (
         <div className="navbar-main-2">
             <div className="container-fluid">
@@ -18,8 +23,11 @@ const NavbarMain = () => {
                     <Navigation />
                     <div className="action-nav">
                         <SearchMain />
-                        <Cart />
                         <Action />
+                        <Cart />
+                        {context.isLogged &&
+                            <Profile />
+                        }
                     </div>
                 </div>
             </div>

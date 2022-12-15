@@ -1,21 +1,17 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { RegisterUser } from './api';
 
 import Layout from "../../../components/Layout/Layout";
 import SignUpForm from "./components/SignUpForm";
+import AuthContext from "../../../store/authContext";
 
 const SignUp = (props) => {
+    const context = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const onSubmitHandler = async (user) => {
-        RegisterUser(user)
-        .then(res => navigate("/login"))
-        .catch(err => {
-            return err.response.data.message;
-        });
-    }
+    useEffect(() => {
+        if (context.isLogged) { navigate("/"); };
+    }, []);
 
     return (
         <Layout>
@@ -23,7 +19,7 @@ const SignUp = (props) => {
                 <div className="container-fluid">
                     < div className="row row-signup">
                         <div className="col-lg-8 col-signup-otr">
-                            <SignUpForm onSubmit={onSubmitHandler} />
+                            <SignUpForm />
                         </div>
                     </div>
                 </div>

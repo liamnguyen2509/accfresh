@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { RegisterUser } from '../api';
 
 const SignUpForm = (props) => {
     const [username, setUserName] = useState("");
@@ -7,7 +10,9 @@ const SignUpForm = (props) => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState({});
 
-    const onSubmitHandler = async (e) => {
+    const navigate = useNavigate();
+
+    const onSubmitHandler = (e) => {
         e.preventDefault();
 
         if (password !== confirmPassword) {
@@ -21,7 +26,11 @@ const SignUpForm = (props) => {
                 password
             };
 
-            await props.onSubmit(newUser);
+            RegisterUser(newUser)
+            .then(res => navigate("/login"))
+            .catch(err => {
+                setError({ type: "Error", message: err.response.data.message });
+            });
         }
     }
 
