@@ -12,7 +12,7 @@ const Navigation = () => {
             <ul className="navigation-inr">
                 {
                     routes.filter(route => route.public === true && route.admin !== true).map((route, index) => { 
-                        if (route.name === "Login" || route.name === "Sign Up") {
+                        if (route.name === "Login" || route.name === "SignUp") {
                             if (!context.isLogged) {
                                 return (
                                     <li key={index} className={"navigation-li nav-li" + index}>

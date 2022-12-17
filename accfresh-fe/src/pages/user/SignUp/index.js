@@ -5,7 +5,7 @@ import Layout from "../../../components/Layout/Layout";
 import SignUpForm from "./components/SignUpForm";
 import AuthContext from "../../../store/authContext";
 
-const SignUp = (props) => {
+const SignUp = () => {
     const context = useContext(AuthContext);
     const navigate = useNavigate();
 

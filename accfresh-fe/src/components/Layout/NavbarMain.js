@@ -24,7 +24,7 @@ const NavbarMain = () => {
                     <div className="action-nav">
                         <SearchMain />
                         <Action />
-                        <Cart />
+                        {authCtx.isLogged && <Cart />}
                         {authCtx.isLogged && <Profile />}
                     </div>
                 </div>

@@ -2,18 +2,12 @@ import React, { useState, useEffect, createContext } from "react";
 
 const AuthContext = createContext({
     isLogged: false,
-    username: "",
-    authToken: "",
-    isAdmin: false,
     onLogout: () => {},
-    onLogin: (email, password) => {}
+    onLogin: (userId, email, balance, authToken, isAdmin) => {}
 });
 
 export const AuthContextProvider = (props) => {
     const [isLogged, setIsLogged] = useState(false);
-    const [username, setUsername] = useState("");
-    const [authToken, setAuthToken] = useState("");
-    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const storedUserLogged = localStorage.getItem("isLogged");
@@ -24,24 +18,31 @@ export const AuthContextProvider = (props) => {
 
     const logoutHandler = () => {
         localStorage.removeItem("isLogged");
+        localStorage.removeItem("isAdmin");
+        localStorage.removeItem("uid");
+        localStorage.removeItem("email");
+        localStorage.removeItem("balance");
+        localStorage.removeItem("authToken");
         setIsLogged(false);
     }
 
-    const loginHandler = (username, authToken, isAdmin) => {
+    const loginHandler = (userId, email, balance, authToken, isAdmin) => {
         localStorage.setItem("isLogged", "1");
+        localStorage.setItem("isAdmin", isAdmin ? "1" : "0");
+        localStorage.setItem("uid", userId);
+        localStorage.setItem("email", email);
+        localStorage.setItem("balance", balance);
+        localStorage.setItem("authToken", authToken);
+        
         setIsLogged(true);
-        setUsername(username);
-        setAuthToken(authToken);
-        setIsAdmin(isAdmin);
+
+        console.log(email);
     }
 
     return (
         <AuthContext.Provider
             value={{
                 isLogged: isLogged,
-                username: username,
-                authToken: authToken,
-                isAdmin: isAdmin,
                 onLogout: logoutHandler,
                 onLogin: loginHandler
             }}

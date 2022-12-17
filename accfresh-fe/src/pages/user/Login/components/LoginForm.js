@@ -17,9 +17,12 @@ const LoginForm = () => {
 
         AuthenticateUser(email, password)
         .then(res => {
-            const username = res.data.data.user.username;
+            console.log(res);
+            const userId = res.data.data.user._id;
+            const email = res.data.data.user.email;
+            const walletBalance = res.data.data.user.wallet.balance.$numberDecimal;
             const authToken = res.data.data.user.authToken;
-            context.onLogin(username, authToken, false);
+            context.onLogin(userId, email, walletBalance, authToken, false);
 
             navigate("/");
             return true;

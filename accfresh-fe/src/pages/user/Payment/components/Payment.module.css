@@ -1,0 +1,29 @@
+.info-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 16px 20px;
+    border-radius: 8px;
+    width: 50%;
+}
+
+.info-btn:not(:last-child) {
+    margin-right: 24px;
+}
+
+.info-btn .label {
+    color: #B7B7B7;
+}
+
+.info-btn .value {
+    color: #FFF;
+}
+
+.info-btn .completed {
+    color: green;
+}
+
+.info-btn .pending {
+    color: orange;
+}

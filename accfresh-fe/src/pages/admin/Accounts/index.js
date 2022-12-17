@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Layout from "../../../components/AdminLayout/Layout";
 import AccountList from "./components/AccountList";
@@ -19,6 +19,7 @@ const Accounts = (props) => {
 
     useEffect(() => {
         if (!context.isLogged) { navigate("/admin/login"); };
+        if (context.isLogged && localStorage.getItem("isAdmin") === "0") { navigate("/"); };
     }, []);
     
     return (
@@ -26,10 +27,10 @@ const Accounts = (props) => {
             <div className="blog-detail-main" style={{ margin: "50px 0" }}>
                 <div className="container-fluid">
                     <div className="row row-custom">
-                        <div className="col-lg-12 col-detail-otr">
+                        <div className="col-lg-12 col-signup-otr">
                             <button className="btn-primary-1 heading-SB" style={{ width: "fit-content" }} onClick={onOpenImportHandler}>{openImport ? "Back To List" : "Import"}</button>
-                            {!openImport && <AccountList />}
-                            {openImport && <ImportForm />}
+                                {!openImport && <AccountList />}
+                                {openImport && <ImportForm />}
                         </div>
                     </div>
                 </div>

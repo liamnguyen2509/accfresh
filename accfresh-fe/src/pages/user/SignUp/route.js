@@ -2,7 +2,7 @@ import { lazy } from "react";
 
 const signUp = {
     path: "/sign-up",
-    name: "Sign Up",
+    name: "SignUp",
     exact: true,
     public: true,
     component: lazy(() => import("."))

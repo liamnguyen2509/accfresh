@@ -9,7 +9,8 @@ const ProductSchema = new Schema({
     sold: Number,
     price: Decimal128,
     image: String,
-    isActive: Boolean
+    isActive: Boolean,
+    orderDetails: [{ type: mongoose.Types.ObjectId, ref: "orderDetails" }]
 }, { timestamps: true });
 
 const Product = mongoose.model('products', ProductSchema);

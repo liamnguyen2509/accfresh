@@ -11,6 +11,7 @@ const Home = (props) => {
 
     useEffect(() => {
         if (!authCtx.isLogged) { navigate("/admin/login"); };
+        if (authCtx.isLogged && localStorage.getItem("isAdmin") === "0") { navigate("/"); };
     }, []);
 
     return (

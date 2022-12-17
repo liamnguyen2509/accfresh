@@ -19,7 +19,7 @@ const LoginForm = () => {
         .then(res => {
             const email = res.data.data.admin.email;
             const authToken = res.data.data.admin.authToken;
-            context.onLogin(email, authToken, true);
+            context.onLogin(0, email, 0, authToken, true);
 
             navigate("/admin");
             return true;

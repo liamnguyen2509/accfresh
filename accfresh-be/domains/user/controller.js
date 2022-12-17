@@ -3,7 +3,8 @@ const sha256 = require('sha256');
 const { newAuthToken } = require('../../util/jwt');
 
 // models
-const User = require('./model');
+const User = require('./models/user');
+const Wallet = require('./models/wallet');
 
 const validateUser = async (email, password) => {
     var emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
@@ -15,7 +16,8 @@ const validateUser = async (email, password) => {
 }
 
 const authenticateUser = async (email, password) => {
-    const fetchedUser = await User.findOne({ email });
+    const fetchedUser = await User.findOne({ email }).populate('wallet');
+    console.log(fetchedUser);
     if (!fetchedUser) throw Error("Invalid credentials. Your email is not exist.");
 
     const passwordHash = sha256(password);
@@ -24,11 +26,12 @@ const authenticateUser = async (email, password) => {
     try {
         const filter = { _id: fetchedUser._id };
         const update = { $set: { authToken: newAuthToken() } };
-        let updatedUser = User.findOneAndUpdate(filter, update, { new: true });
+        await User.findOneAndUpdate(filter, update, { new: true });
         
-        return updatedUser;
+        return fetchedUser;
     } catch (e) {
-        throw Error("Update token failed.");
+        // throw Error("Update token failed.");
+        throw Error(e.message);
     }
 }
 

@@ -5,9 +5,8 @@ const AccountSchema = new Schema({
     content: String,
     isSold: Boolean,
     isActive: Boolean,
-    group: {type: mongoose.Types.ObjectId, ref: "Product"},
-    order: {type: mongoose.Types.ObjectId, ref: "Order"},
-    user: {type: mongoose.Types.ObjectId, ref: "User"}
+    product: {type: mongoose.Types.ObjectId, ref: "products"},
+    orderDetail: {type: mongoose.Types.ObjectId, ref: "orderDetails"}
 }, { timestamps: true });
 
 const Account = mongoose.model('accounts', AccountSchema);

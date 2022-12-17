@@ -1,0 +1,115 @@
+.account-content-panel {
+    margin-top: 15px;
+    padding: 48px 48px 36px 48px;
+    border-radius: 24px;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.account-table {
+    color: #fff
+}
+
+.account-form-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.select-main {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.select-main .select, .line-count {
+    color: #FFF;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    width: 50%;
+}
+
+.line-count {
+    padding: 12px 40px 12px 24px;
+}
+
+/* .select-main .select .select-hidden {
+    display: none;
+    visibility: hidden;
+    padding-right: 10px;
+} */
+
+.select-main .select .select-styled {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF;
+    padding: 12px 40px 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    line-height: 28px;
+    font-family: "Poppins-Medium";
+    text-align: left;
+}
+
+.select-main .select .select-options {
+    display: none;
+    position: absolute;
+    top: 130%;
+    right: 0;
+    width: 100%;
+    z-index: 999;
+    background-color: #222F45;
+    border-radius: 12px;
+    padding: 16px 0;
+    box-shadow: none;
+    text-align: left;
+}
+
+.select-main .select .select-options li {
+    font-size: 16px;
+    line-height: 28px;
+    font-family: "Poppins-Medium";
+    color: #FFFFFF;
+    border-radius: 12px;
+    padding: 0 24px 0 24px;
+    transition: 0.3s;
+}
+
+.action {
+    margin: 30px 0;
+}
+
+.action .button {
+    padding: 13px 24px 13px 24px;
+    border-radius: 12px;
+    width: 100%;
+    background-color: #019DEA;
+    color: #FFFFFF;
+    border: 1px solid transparent;
+    transition: 0.2s;
+}
+
+.textarea {
+    height: 500px;
+    padding: 12px 24px;
+    width: 100%;
+    appearance: none;
+    resize: none;
+    background-color: #FFF;
+    color: #000;
+}
+
+.textarea::placeholder {
+    color: #000;
+}
+
+.counter-lines {
+    color: orange;
+    font-weight: 600;
+}
+
+.counter-import {
+    color: green;
+    font-weight: 600;
+}

@@ -1,0 +1,116 @@
+.deposit-modal {
+    position: fixed;
+    background-color: #222F45;
+    width: 40%;
+    border-radius: 24px;
+    padding: 48px 64px 56px 64px;
+    top: 25%;
+    left: 30%;
+    right: 0;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s;
+}
+
+.deposit-modal-open {
+    opacity: 1;
+    visibility: visible;
+    transition: 0.3s;
+}
+
+.content {
+    text-align: center;
+}
+
+.content .text {
+    color: #FFFFFF;
+}
+
+.content .btn-main {
+    display: flex;
+    align-items: center;
+    margin: 32px 0;
+}
+
+.content .btn-main .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 9px;
+    border-radius: 16px;
+    width: 100%;
+}
+
+.content .btn-main .btn:not(:last-child) {
+    margin-right: 24px;
+}
+
+.content .btn-main .btn .icon {
+    margin: 0 12px 0 0;
+    color: #019DEA;
+    font-size: 24px;
+}
+
+.content .btn-main .btn .text {
+    color: #FFFFFF;
+    font-family: "Poppins-Medium";
+}
+
+.form-main .input-main {
+    display: flex;
+    align-items: center;
+}
+
+.content .form-main .input-main .input-otr {
+    width: 50%;
+}
+
+.content .form-main .input-main .input-otr:not(:last-child) {
+    margin-right: 24px;
+}
+
+.content .form-main .input-main .input-otr .input {
+    width: 100%;
+}
+
+.content .form-main .input-main .input-otr:not(:last-child) .input {
+    text-align: right;
+    padding: 14px 24px 14px 48px;
+}
+
+.input {
+    padding: 14px 48px 14px 24px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-family: "Poppins-Medium";
+    color: #FFFFFF;
+    border: none;
+}
+
+.input::placeholder {
+    color: #FFFFFF;
+}
+
+.form-main .action-otr {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 30px 0 0 0;
+}
+
+.form-main .action-otr .button {
+    padding: 13px 24px 13px 24px;
+    border-radius: 12px;
+    background-color: #019DEA;
+    color: #FFFFFF;
+    border: 1px solid transparent;
+    transition: 0.2s;
+    width: 100%;
+}
+
+.form-main .action-otr .button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid #019DEA;
+}

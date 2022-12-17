@@ -6,12 +6,13 @@ import ProductList from "./components/ProductList";
 
 import AuthContext from "../../../store/authContext";
 
-const Groups = (props) => {
+const Products = (props) => {
     const context = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!context.isLogged) { navigate("/admin/login"); };
+        if (context.isLogged && localStorage.getItem("isAdmin") === "0") { navigate("/"); };
     }, []);
     
     return (
@@ -29,4 +30,4 @@ const Groups = (props) => {
     ); 
 }
 
-export default Groups;
+export default Products;

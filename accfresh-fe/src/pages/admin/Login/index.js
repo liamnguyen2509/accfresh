@@ -11,7 +11,7 @@ const Login = (props) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (context.isLogged) { navigate("/"); };
+        if (context.isLogged && localStorage.getItem("isAdmin") === "1") { navigate("/admin"); };
     }, []);
     
     return (

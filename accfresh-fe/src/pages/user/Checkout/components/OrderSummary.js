@@ -1,9 +1,26 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+import { SubmitOrder } from "../api";
 import CartContext from "../../../../store/cartContext";
 
 const OrderSummary = () => {
     const cartCtx = useContext(CartContext);
+    const navigate = useNavigate();
+
+    const [error, setError] = useState({});
+
+    const onPurchaseHandler = () => {
+        SubmitOrder({
+            buyerEmail: localStorage.getItem("email"),
+            totalAmount: cartCtx.totalAmount.toFixed(2),
+            items: cartCtx.items
+        })
+        .then(res => res.data.data ? navigate("/orders") : "")
+        .catch(err => {
+            setError({ type: "Error", message: err.response.data.message });
+        });
+    }
 
     return (
         <div className="col-sidebar-inr" style={{ paddingLeft: "0" }}>
@@ -28,9 +45,8 @@ const OrderSummary = () => {
                         </div>
                     </li>
                 </ul>
-                <button className="btn-primary-1 heading-SB" style={{ textAlign: "center", width: "100%" }}>
-                    Purchase
-                </button>
+                {cartCtx.items.length > 0 && <button className="btn-primary-1 heading-SB" style={{ textAlign: "center", width: "100%" }} onClick={onPurchaseHandler}> Make Purchase </button>}
+                <p className="text heading-S" style={{ color: "orange", padding: "20px 0 0 0" }}>{error && error.message}</p>
             </div>
         </div>
     );

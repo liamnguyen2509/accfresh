@@ -9,16 +9,14 @@ const AccountItem = (props) => {
     return (
         <tr style={{ verticalAlign: "middle" }}>
             <td>{props.order}</td>
-            <td>{props.name}</td>
-            <td>{props.description}</td>
-            <td>{props.stock}</td>
-            <td>{props.sold}</td>
-            <td>${props.price}</td>
-            <td>
-                <div style={{ height: "50px", width: "50px" }}>
-                    <img className="img img-fluid" src={props.image} alt="accfresh" />
-                </div>
-            </td>
+            <td>{props.product}</td>
+            <td>{props.content}</td>
+            <td>{props.isSold ? <span style={{ color: "green", fontWeight: "bold" }}>SOLD</span> : ""}</td>
+            <td>{props.buyer}</td>
+            <td>{props.isActive && !props.isSold
+                    ? <span style={{ color: "green", fontWeight: "bold" }}>ACTIVE</span> 
+                    : <span style={{ color: "red", fontWeight: "bold" }}>IN ACTIVE</span>
+                }</td>
             <td><i className="ri-delete-bin-line" style={{ cursor: "pointer", color: "red", fontSize: "25px" }} onClick={onRemoveHandler}></i></td>
         </tr>
     );
