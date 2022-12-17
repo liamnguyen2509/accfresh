@@ -129,4 +129,9 @@ const getPaymentsByUser = async (userId) => {
     return payments;
 }
 
-module.exports = { getReceiver, getRate, deposit, requestPerfectMoney, getLastedPayment, getPaymentById, getPaymentsByUser }
+const getPayments = async () => {
+    const payments = await Payment.find({}).sort({ updatedAt: -1 }).populate("user");
+    return payments;
+}
+
+module.exports = { getReceiver, getRate, deposit, requestPerfectMoney, getLastedPayment, getPaymentById, getPaymentsByUser, getPayments }

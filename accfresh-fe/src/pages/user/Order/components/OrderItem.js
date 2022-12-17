@@ -4,7 +4,7 @@ const OrderItem = (props) => {
     return (
         <tr style={{ verticalAlign: "middle" }}>
             <td>{props.order}</td>
-            <td>{props.description}</td>
+            <td>{props.details}</td>
             <td>{props.totalAmount}$</td>
             <td>{props.orderDate}</td>
         </tr>

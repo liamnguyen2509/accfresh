@@ -28,7 +28,7 @@ const ProductList = () => {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>DESCRIPTION</th>
+                        <th>DETAILS</th>
                         <th>AMOUNT</th>
                         <th>ORDER DATE</th>
                     </tr>
@@ -40,9 +40,9 @@ const ProductList = () => {
                             <OrderItem 
                                 key={order._id}
                                 order={index + 1}
-                                description={
+                                details={
                                     order.orderDetails.map(details => (
-                                        `Product: ${details.product.name} | Qty: ${details.quantity} \n`
+                                        `${details.product.name} | ${details.quantity} \n`
                                     ))
                                 }
                                 totalAmount={order.totalAmount.$numberDecimal}

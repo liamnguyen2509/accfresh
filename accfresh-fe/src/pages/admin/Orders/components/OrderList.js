@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Moment from 'moment';
 
 import OrderItem from "./OrderItem";
 
@@ -10,7 +11,7 @@ const OrderList = () => {
 
     useEffect(() => {
         GetOrders()
-        .then(res => setOrders(res.data.data.orders))
+        .then(res => setOrders(res.data.data))
         .catch(err => {
             setError({ type: "Error", message: err.response.data.message });
         });
@@ -30,8 +31,7 @@ const OrderList = () => {
                         <th>BUYER</th>
                         <th>DETAILS</th>
                         <th>AMOUNT</th>
-                        <th>PAID</th>
-                        <th>STATUS</th>
+                        <th>ORDER DATE</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -42,11 +42,14 @@ const OrderList = () => {
                             <OrderItem 
                                 key={order._id}
                                 order={index + 1}
-                                buyer={order.buyer}
-                                details={order.details}
-                                totalAmount={order.totalAmount}
-                                piad={order.paid}
-                                status={order.status}
+                                buyer={order.buyer.email}
+                                details={
+                                    order.orderDetails.map(details => (
+                                        `${details.product.name} | ${details.quantity} \n`
+                                    ))
+                                }
+                                totalAmount={order.totalAmount.$numberDecimal}
+                                orderDate={Moment(order.createdAt).format('d-M-yyyy')}
                             />
                         ))
                     }

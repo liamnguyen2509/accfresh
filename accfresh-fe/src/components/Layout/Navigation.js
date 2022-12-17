@@ -11,7 +11,7 @@ const Navigation = () => {
         <div className="navigation-otr">
             <ul className="navigation-inr">
                 {
-                    routes.filter(route => route.public === true && route.admin !== true).map((route, index) => { 
+                    routes.sort((a,b) => a.order - b.order).filter(route => route.public === true && route.admin !== true).map((route, index) => { 
                         if (route.name === "Login" || route.name === "SignUp") {
                             if (!context.isLogged) {
                                 return (

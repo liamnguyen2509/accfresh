@@ -14,7 +14,7 @@ const App = () => {
             <Route key={path} path={path} element={<Component />} {...rest} />
           );
         })}
-        <Route key="payments/:id" path="payments/:id" element={<PaymentForm />} />
+        <Route key="/payments/:id" path="/payments/:id" element={<PaymentForm />} />
       </Routes>  
     </Suspense>
   );

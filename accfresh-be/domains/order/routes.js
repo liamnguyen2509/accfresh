@@ -10,6 +10,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const orders = await getOrders();
+        console.log(orders);
         res.status(200).json(responseJSON('S', 'Get Orders successful.', orders));
     } catch (e) {
         res.status(400).json(responseJSON('SWR', e.message));

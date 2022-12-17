@@ -50,6 +50,7 @@ const submitOrder = async (order) => {
         if (accountWillBeSold.length <= 0 || accountWillBeSold.length < item.quantity) throw Error("One of your items is not enought stock.");
         
         product.stock = product.stock - item.quantity;
+        product.sold = product.sold + item.quantity;
         await product.save();
 
         const createdOrderDetail = new OrderDetails ({

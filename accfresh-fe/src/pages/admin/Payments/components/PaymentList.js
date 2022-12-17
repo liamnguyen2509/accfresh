@@ -10,7 +10,7 @@ const PaymentList = () => {
     const [error, setError] = useState({});
 
     useEffect(() => {
-        GetPayments(localStorage.getItem("uid"))
+        GetPayments()
         .then(res => setPayments(res.data.data))
         .catch(err => {
             setError({ type: "Error", message: err.response.data.message });
@@ -30,9 +30,11 @@ const PaymentList = () => {
                         <th>#</th>
                         <th>ID</th>
                         <th>AMOUNT</th>
+                        <th>PAYER</th>
+                        <th>PAYEE</th>
+                        <th>MEMO CODE</th>
                         <th>STATUS</th>
-                        <th>PAID DATE</th>
-                        {/* <th style={{ maxWidth: "20%" }}></th> */}
+                        <th>DATE</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,8 +47,11 @@ const PaymentList = () => {
                                 id={payment.paymentId}
                                 amount={payment.paymentAmount}
                                 unit={payment.paymentUnit}
+                                payer={payment.user.email}
+                                payee={payment.payeeName}
+                                memo={payment.suggestedMemo}
                                 status={payment.status}
-                                payDate={Moment(payment.createdAt).format('d-MMM-yyyy')}
+                                payDate={Moment(payment.createdAt).format('d-M-yyyy')}
                             />
                         ))
                     }

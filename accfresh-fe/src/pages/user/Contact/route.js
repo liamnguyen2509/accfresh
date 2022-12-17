@@ -5,6 +5,7 @@ const contact = {
     name: "Contact",
     exact: true,
     public: true,
+    order: 3,
     component: lazy(() => import("."))
 }
 

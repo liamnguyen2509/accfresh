@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 
 import Navigation from "./Navigation";
+import Profile from "./Profile";
 
 import AuthContext from "../../store/authContext";
 
@@ -17,12 +18,9 @@ const NavbarMain = () => {
                         </a>
                     </div>
                     <Navigation />
-                    {/* <div className="action-nav">
-                        <SearchMain />
-                        <Action />
-                        <Cart />
+                    <div className="action-nav">
                         {authCtx.isLogged && <Profile />}
-                    </div> */}
+                    </div>
                 </div>
             </div>
         </div>

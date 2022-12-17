@@ -7,7 +7,8 @@ const UserSchema = new Schema({
     password: String,
     authToken: String,
     wallet: {type: mongoose.Types.ObjectId, ref: "wallets"},
-    orders: [{ type: mongoose.Types.ObjectId, ref: "orders" }]
+    orders: [{ type: mongoose.Types.ObjectId, ref: "orders" }],
+    payments: [{ type: mongoose.Types.ObjectId, ref: "payments" }]
 }, { timestamps: true });
 
 const User = mongoose.model('users', UserSchema);

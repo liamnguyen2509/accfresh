@@ -1,12 +1,21 @@
 // domain functions
 const { getReceiver, getRate, deposit, requestPerfectMoney, getLastedPayment, getPaymentById,
-        getPaymentsByUser } = require('./controller');
+        getPaymentsByUser, getPayments } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
 
 const express = require('express');
 const router = express.Router();
+
+router.get('/', async (req, res) => {
+    try {
+        const payments = await getPayments();
+        res.status(200).json(responseJSON('S', 'Get Payments successful.', payments));
+    } catch (e) {
+        res.status(400).json(responseJSON('SWR', e.message));
+    }
+});
 
 router.post('/byCode', async (req, res) => {
     try {
@@ -31,7 +40,6 @@ router.post('/byUser', async (req, res) => {
 
 router.get('/lasted', async (req, res) => {
     try {
-        console.log("aaaaaa");
         const payment = await getLastedPayment();
         res.status(200).json(responseJSON('S', 'Get Payment successful.', payment));
     } catch (e) {
