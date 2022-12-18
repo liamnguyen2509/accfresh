@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node test.js",
     "local": "nodemon -r dotenv/config index.js dotenv_config_path=env/local.env",
-    "start": "nodemon -r dotenv/config handler.js dotenv_config_path=env/inte.env"
+    "start": "node handler.js"
   },
   "author": "",
   "license": "ISC",

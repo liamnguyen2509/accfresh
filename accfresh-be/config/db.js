@@ -1,5 +1,10 @@
-require('dotenv').config();
+const dotenv = require('dotenv');
+const path = require('path');
 const mongoose = require('mongoose');
+
+dotenv.config({
+  path: path.resolve(__dirname, `../env/${process.env.NODE_ENV}.env`)
+});
 
 mongoose.set('strictQuery', true);
 mongoose
