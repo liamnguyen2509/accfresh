@@ -21,74 +21,543 @@
     "paths": {
         "/user/authenticate": {
             "post": {
-              "description": "Authenticate with email and password",
-              "parameters": [
-                {
-                    "name": "User",
-                    "in": "body",
-                    "required": true,
-                    "schema": {
-                        "type": "object",
-                        "required": ["email", "password"],
-                        "properties": {
-                            "email": {
-                                "type": "string"
-                            },
-                            "password": {
-                                "type": "string"
+                "summary": "Authenticate with email and password",
+                "parameters": [
+                    {
+                        "name": "User",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": ["email", "password"],
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }
-                }
-              ],
-              "responses": {
-                "200": {
-                    "description": "OK"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
                 },
-                "400": {
-                    "description": "FAILED"
-                },
-                "default": {
-                    "description": "unexpected error"
-                }
-              }
+                "tags": [ "Users" ]
             }
         },
         "/user/signup": {
             "post": {
-              "description": "Register a new User",
-              "parameters": [
-                {
-                    "name": "User",
-                    "in": "body",
-                    "schema": {
-                        "type": "object",
-                        "required": ["username", "email", "password"],
-                        "properties": {
-                            "username": {
-                                "type": "string"
-                            },
-                            "email": {
-                                "type": "string"
-                            },
-                            "password": {
-                                "type": "string"
+                "summary": "Register a new User",
+                "parameters": [
+                    {
+                        "name": "User",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": ["username", "email", "password"],
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
                             }
                         }
                     }
-                }
-              ],
-              "responses": {
-                "200": {
-                    "description": "OK"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
                 },
-                "400": {
-                    "description": "FAILED"
-                },
-                "default": {
-                    "description": "unexpected error"
+                "tags": [ "Users" ]
+            }
+        },
+        "/admin/authenticate": {
+            "post": {
+                "tags": [ "Admin" ],
+                "summary": "Authenticate admin with email and password",
+                "parameters": [
+                    {
+                        "name": "Admin",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": ["email", "password"],
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
                 }
-              }
+            }
+        },
+        "/account": {
+            "get": {
+                "tags": [ "Accounts" ],
+                "summary": "Admin - Get List accounts",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/account/byUser": {
+            "post": {
+                "tags": [ "Accounts" ],
+                "summary": "Get List accounts by User Id",
+                "parameters": [
+                    {
+                        "name": "User ID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/account/import": {
+            "post": {
+                "tags": [ "Accounts" ],
+                "summary": "Admin - Import list accounts",
+                "parameters": [
+                    {
+                        "name": "Accounts",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "line": {
+                                        "type": "string"
+                                    },
+                                    "productId": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/order": {
+            "get": {
+                "tags": [ "Orders" ],
+                "summary": "Admin - Get List orders",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [ "Orders" ],
+                "summary": "Create new order",
+                "parameters": [
+                    {
+                        "name": "Orders",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "buyerEmail": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "totalAmount": "string"
+                                },
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": { "type": "string" },
+                                            "price": { "type": "string" },
+                                            "quantity": { "type": "integer" }
+                                        }
+                                    } 
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/order/byUser": {
+            "post": {
+                "tags": [ "Orders" ],
+                "summary": "Get List orders by User Id",
+                "parameters": [
+                    {
+                        "name": "User ID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "userId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/payment": {
+            "get": {
+                "tags": [ "Payments" ],
+                "summary": "Admin - Get List payments",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/payment/byCode": {
+            "post": {
+                "tags": [ "Payments" ],
+                "summary": "Get Payment by payment ID",
+                "parameters": [
+                    {
+                        "name": "Payment ID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "paymentId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/payment/byUser": {
+            "post": {
+                "tags": [ "Payments" ],
+                "summary": "Get List Payment by User ID",
+                "parameters": [
+                    {
+                        "name": "User ID",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "properties": {
+                                "userId": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/payment/lasted": {
+            "get": {
+                "tags": [ "Payments" ],
+                "summary": "Get lasted payment",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/payment/receiver": {
+            "get": {
+                "tags": [ "Payments" ],
+                "summary": "Get receiver information - only one receiver",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/payment/rate": {
+            "post": {
+                "tags": [ "Payments" ],
+                "summary": "Get rate information from Perfect Money to wallet",
+                "parameters": [
+                    {
+                        "name": "",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": 
+                            {
+                                "send": {
+                                    "type": "string",
+                                    "default": "PerfectMoney"
+                                },
+                                "sendCurrency": {
+                                    "type": "string",
+                                    "default": "USD"
+                                },
+                                "receive": {
+                                    "type": "string",
+                                    "default": "VietComBank"
+                                },
+                                "receiveCurrency": {
+                                    "type": "string",
+                                    "default": "VND"
+                                },
+                                "amount": {
+                                    "type": "string"
+                                },
+                                "amountOf": {
+                                    "type": "string",
+                                    "default": "send"
+                                },
+                                "fromAmount": {
+                                    "type": "string",
+                                    "default": ""
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/payment/deposit": {
+            "post": {
+                "tags": [ "Payments" ],
+                "summary": "Get transaction information for deposit",
+                "parameters": [
+                    {
+                        "name": "Transaction",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": 
+                            {
+                                "amount": {
+                                    "type": "string"
+                                },
+                                "rate": {
+                                    "type": "string"
+                                },
+                                "send": {
+                                    "type": "integer",
+                                    "default": 4
+                                },
+                                "receive": {
+                                    "type": "integer",
+                                    "default": 1
+                                },
+                                "fromCurrency": {
+                                    "type": "integer",
+                                    "default": 50
+                                },
+                                "toCurrency": {
+                                    "type": "integer",
+                                    "default": 51
+                                },
+                                "receiverBank": {
+                                    "type": "string"
+                                },
+                                "phone": {
+                                    "type": "string"
+                                },
+                                "receiveAmount": {
+                                    "type": "string"
+                                },
+                                "senderEmail": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/product": {
+            "get": {
+                "tags": [ "Products" ],
+                "summary": "Get List products",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "FAILED"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
             }
         }
     }
