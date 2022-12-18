@@ -19,4 +19,6 @@ app.use(bodyParser());
 // registering routes
 app.use('/api', routes);
 
+console.log(process.env.MONGODB_URI);
+
 module.exports = app;

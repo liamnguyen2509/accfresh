@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node test.js",
-    "dev": "nodemon -r dotenv/config index.js dotenv_config_path=env/development.env",
-    "start": "node server.js"
+    "local": "nodemon -r dotenv/config index.js dotenv_config_path=env/local.env",
+    "start": "nodemon -r dotenv/config handler.js dotenv_config_path=env/inte.env"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.8.0",
     "nodemon": "^2.0.20",
+    "serverless-http": "^3.1.0",
     "sha256": "^0.2.0",
     "swagger-jsdoc": "^6.2.5",
     "swagger-ui-express": "^4.6.0"
