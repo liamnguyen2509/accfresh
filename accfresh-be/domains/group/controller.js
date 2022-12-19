@@ -14,6 +14,7 @@ const getGroups = async () => {
         }, { stock: 0, sold: 0 });
 
         returnGroups.push({
+            id: group.id,
             name: group.name,
             image: group.image,
             stock: total.stock,

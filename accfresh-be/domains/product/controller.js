@@ -7,4 +7,10 @@ const getProducts = async () => {
     return products;
 }
 
-module.exports = { getProducts }
+const getProductsByGroup = async (groupId) => {
+    const products = await Product.find({ group: groupId });
+
+    return products;
+}
+
+module.exports = { getProducts, getProductsByGroup }

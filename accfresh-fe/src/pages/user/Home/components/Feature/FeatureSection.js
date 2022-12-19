@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from "react";
 
 import Group from "./Group";
+import ProductsModal from "./ProductsModal";
 
-import { GetGroups } from '../../api';
+import { GetGroups, GetProductsByGroup } from '../../api';
 
 const FeatureSection = () => {
     const [groups, setGroups] = useState([]);
+    const [products, setProducts] = useState([]);
     const [error, setError] = useState({});
+
+    const onGroupClickHandler = (groupId) => {
+        GetProductsByGroup(groupId)
+        .then(res => setProducts(res.data.data.filter(product => product.isActive === true)))
+        .catch(err => {
+            setError({ type: "Error", message: err.response.data.message });
+        });;
+    }
+
+    const onCloseModalHandler = () => {
+        setProducts([]);
+    }
 
     useEffect(() => {
         GetGroups()
@@ -24,17 +38,18 @@ const FeatureSection = () => {
                 </div>
                 <div className="row row-custom">
                     {
-                        
                         groups.map(group => (
                             <Group 
-                                key={group._id}
-                                id={group._id}
+                                key={group.id}
+                                id={group.id}
                                 name={group.name} 
                                 image={group.image} 
                                 stock={group.stock} 
-                                price={group.price.$numberDecimal} />
+                                price={group.price.$numberDecimal} 
+                                onClick={onGroupClickHandler} />
                         ))
                     }
+                    {products.length > 0 && <ProductsModal products={products} onClose={onCloseModalHandler} />}
                 </div>
             </div>
         </div>
