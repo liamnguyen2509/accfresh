@@ -21,7 +21,7 @@ const getRate = async (request) => {
         amount: request.amount, 
         amountOf: "send", 
         fromAmount: "" 
-    }, { timeout: 5000, headers: { 'Content-Type': 'multipart/form-data', "Accept-Encoding": "gzip,deflate,compress" } })
+    }, { timeout: 5000, headers: { 'Content-Type': 'multipart/form-data', "Accept-Encoding": "gzip,deflate,compress", "User-Agent": "axios 1.2.1" } })
     .then((response) => response.data)
     .catch((err) => { throw Error(err.message) });
 }

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-import Product from "./Product";
+import Group from "./Group";
 
-import { GetProducts } from '../../api';
+import { GetGroups } from '../../api';
 
 const FeatureSection = () => {
-    const [products, setProducts] = useState([]);
+    const [groups, setGroups] = useState([]);
     const [error, setError] = useState({});
 
     useEffect(() => {
-        GetProducts()
-        .then(res => setProducts(res.data.data.products.filter(product => product.isActive === true)))
+        GetGroups()
+        .then(res => setGroups(res.data.data.filter(group => group.isActive === true)))
         .catch(err => {
             setError({ type: "Error", message: err.response.data.message });
         });
@@ -25,13 +25,14 @@ const FeatureSection = () => {
                 <div className="row row-custom">
                     {
                         
-                        products.map(product => (
-                            <Product 
-                                key={product._id}
-                                id={product._id}
-                                name={product.name} 
-                                image={product.image} 
-                                price={product.price.$numberDecimal} />
+                        groups.map(group => (
+                            <Group 
+                                key={group._id}
+                                id={group._id}
+                                name={group.name} 
+                                image={group.image} 
+                                stock={group.stock} 
+                                price={group.price.$numberDecimal} />
                         ))
                     }
                 </div>

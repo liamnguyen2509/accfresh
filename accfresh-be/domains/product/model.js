@@ -10,6 +10,7 @@ const ProductSchema = new Schema({
     price: Decimal128,
     image: String,
     isActive: Boolean,
+    group: { type: mongoose.Types.ObjectId, ref: "groups" },
     orderDetails: [{ type: mongoose.Types.ObjectId, ref: "orderDetails" }]
 }, { timestamps: true });
 
