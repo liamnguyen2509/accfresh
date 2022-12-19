@@ -33,7 +33,7 @@ const Product = (props) => {
     }
 
     return (
-        <div className="col-lg-3 col-otr">
+        <div className="col-lg-2 col-otr">
             <div className="col-inr box-4">
                 <div className="cover-img-otr">
                     <Link to={`/product/${props.id}`}>
