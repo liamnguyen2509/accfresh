@@ -7,7 +7,7 @@ import FeatureSection from "./components/Feature/FeatureSection";
 const Home = (props) => {
     return (
         <Layout>
-            <HeroSection />
+            {/* <HeroSection /> */}
             <FeatureSection />
         </Layout>
     ); 

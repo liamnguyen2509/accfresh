@@ -17,7 +17,7 @@
     "produces": [
         "application/json"
     ],
-    "basePath": "/api",
+    "basePath": "/inte/api",
     "paths": {
         "/user/authenticate": {
             "post": {
