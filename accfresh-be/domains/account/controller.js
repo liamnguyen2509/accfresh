@@ -24,6 +24,11 @@ const getAccountsByUser = async (userId) => {
     return accounts;
 }
 
+const getAccountsByOrderDetail = async (orderDetailId) => {
+    const accounts = await Account.find({ orderDetail: orderDetailId }).populate("product");
+    return accounts;
+}
+
 const createAccounts = async (accounts) => {
     const product = await Product.findById(accounts[0].productId);
 
@@ -52,4 +57,4 @@ const createAccounts = async (accounts) => {
     return totalInserted;
 }
 
-module.exports = { getAccounts, createAccounts, getAccountsByUser }
+module.exports = { getAccounts, createAccounts, getAccountsByUser, getAccountsByOrderDetail }

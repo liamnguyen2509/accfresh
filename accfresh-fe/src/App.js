@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import routes from "./pages/routes";
 import Spinner from './components/Spinner';
 import PaymentForm from './pages/user/Payment/components/PaymentForm';
+import OrderDetails from './pages/user/Order/components/OrderDetails';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
           );
         })}
         <Route key="/payments/:id" path="/payments/:id" element={<PaymentForm />} />
+        <Route key="/orders/:orderId" path="/orders/:orderId" element={<OrderDetails />} />
       </Routes>  
     </Suspense>
   );

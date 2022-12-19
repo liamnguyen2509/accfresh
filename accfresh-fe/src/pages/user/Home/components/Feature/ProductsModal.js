@@ -25,6 +25,7 @@ const ProductsModal = (props) => {
                             image={product.image}
                             price={product.price.$numberDecimal}
                             stock={product.stock}
+                            sold={product.sold}
                         />
                     ))
                 }

@@ -1,5 +1,5 @@
 // domain functions
-const { getAccounts, createAccounts, getAccountsByUser } = require('./controller');
+const { getAccounts, createAccounts, getAccountsByUser, getAccountsByOrderDetail } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
@@ -26,6 +26,15 @@ router.post('/byUser', async (req, res) => {
     }
 });
 
+router.post('/byOrder', async (req, res) => {
+    try {
+        const { orderDetailId } = req.body;
+        const accounts = await getAccountsByOrderDetail(orderDetailId);
+        res.status(200).json(responseJSON('S', 'Get Accounts successful.', accounts));
+    } catch (e) {
+        res.status(400).json(responseJSON('SWR', e.message));
+    }
+});
 
 router.post('/import', async (req, res) => {
     try {

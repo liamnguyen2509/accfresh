@@ -38,7 +38,9 @@ const ProductItem = (props) => {
                 <img className={classes.image} src={props.image} alt={props.name} style={{ padding: "6px 0" }} />
                 <div className={classes.info}>
                     <p className="heading-SB">{props.name}</p>
-                    <p><span style={{ color: "orange" }}>${props.price}</span> | <span style={{ color: "green" }}>{props.stock}</span> in stock</p>
+                    <p><span style={{ color: "orange" }}>${props.price}</span> 
+                    | <span style={{ color: "green" }}>{props.stock}</span> in stock 
+                    | <span style={{ color: "yellow" }}>{props.sold}</span> sold</p>
                 </div>
                 <div className={classes.actions}>
                     <span className={classes["add-to-cart"]}>

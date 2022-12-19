@@ -23,6 +23,7 @@ const ImportForm = () => {
 
     const onDataChangeHandler = (e) => {
         setDataLines(e.target.value);
+        setLineImported(0);
     }
 
     const onSubmitHandler = (e) => {

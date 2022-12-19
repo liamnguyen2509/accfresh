@@ -44,9 +44,6 @@ const Profile = (props) => {
                         <Link to="/orders" className="link-profile-a heading-SB"> My Orders </Link>
                     </li>
                     <li className="link-profile-li">
-                        <Link to="/accounts" className="link-profile-a heading-SB"> My Accounts </Link>
-                    </li>
-                    <li className="link-profile-li">
                         <Link to="/" className="link-profile-a heading-SB" onClick={context.onLogout}> Logout </Link>
                     </li>
                 </ul>
