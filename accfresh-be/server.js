@@ -19,6 +19,11 @@ app.use(bodyParser());
 // registering routes
 app.use('/api', routes);
 
-console.log(process.env.MONGODB_URI);
+const http = require('http');
+const server = http.createServer(app);
+const port = process.env.PORT || 5000;
+server.listen(port, () => {
+  console.log(`Welcome to accfresh api`);
+});
 
 module.exports = app;
