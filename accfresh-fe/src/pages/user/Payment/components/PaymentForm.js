@@ -26,7 +26,7 @@ const PaymentForm = (props) => {
             status: res.data.data.status
         }))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err.response.message });
         }); 
     }, []);
 
