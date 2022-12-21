@@ -12,7 +12,7 @@ const ProductList = () => {
         GetProducts()
         .then(res => setProducts(res.data.data.products))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err });
         });
     }, []);
 

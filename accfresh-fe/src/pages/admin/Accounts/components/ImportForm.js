@@ -37,7 +37,7 @@ const ImportForm = () => {
         ImportAccounts (accounts)
         .then(res => setLineImported(res.data.data.total))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err });
         });
     }
 
@@ -45,7 +45,7 @@ const ImportForm = () => {
         GetProducts()
         .then(res => setProducts(res.data.data.products.map(product => ({ value: product._id, text: product.name }))))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err });
         });
     }, []);
 
