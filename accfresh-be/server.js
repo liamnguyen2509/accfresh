@@ -13,7 +13,11 @@ const routes = require('./api-routes');
 // swagger
 app.use("/api-docs", swagger.serve, swagger.setup(swaggerDocument));
 // cors
-app.use(cors());
+app.use(cors(
+    {
+        origin: '*'
+    }
+));
 // Accepting post form data
 app.use(bodyParser());
 // registering routes
