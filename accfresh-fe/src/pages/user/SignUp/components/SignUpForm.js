@@ -29,7 +29,7 @@ const SignUpForm = (props) => {
             RegisterUser(newUser)
             .then(res => navigate("/login"))
             .catch(err => {
-                setError({ type: "Error", message: err.response.data.message });
+                setError({ type: "Error", message: err.response.message });
             });
         }
     }

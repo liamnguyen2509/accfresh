@@ -28,7 +28,7 @@ const ProductList = () => {
             setOrders(orders);
         })
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err.response.message });
         });
     }, []);
 

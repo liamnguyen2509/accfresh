@@ -18,7 +18,7 @@ const OrderSummary = () => {
         })
         .then(res => res.data.data ? navigate("/orders") : "")
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err });
         });
     }
 

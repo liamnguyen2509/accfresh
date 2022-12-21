@@ -13,7 +13,7 @@ const OrderList = () => {
         GetOrders()
         .then(res => setOrders(res.data.data))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err });
         });
     }, []);
 

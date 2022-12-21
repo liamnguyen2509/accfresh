@@ -41,17 +41,28 @@ const registerUser = async (username, email, password) => {
     const fetchedUser = await User.findOne({ email });
     if (fetchedUser) throw Error("Registering failed. Your email existing.");
 
+    const newWallet = new Wallet({
+        balance: 0,
+        previousBalance: 0
+    });
+
+    let createdWallet = await newWallet.save().catch((err) => {
+        throw Error("Create wallet for User failed.");
+    });
+
     const passwordHash = sha256(password);
     const newUser = new User({
         username,
         email,
         password: passwordHash,
-        authToken: newAuthToken()
+        authToken: newAuthToken(),
+        wallet: createdWallet
     });
+
     let registedUser = await newUser.save().catch((err) => {
         throw Error("Register new User failed.");
     });
-    
+
     return registedUser;
 }
 

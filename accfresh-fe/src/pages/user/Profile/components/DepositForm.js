@@ -42,7 +42,7 @@ const DepositForm = (props) => {
         GetRate("PerfectMoney", "USD", receiver.bank, "VND", e.target.value)
         .then(res => setRate(res.data.data))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err.response.message });
         }); 
     };
 
@@ -73,7 +73,7 @@ const DepositForm = (props) => {
                 }); 
             })
             .catch(err => {
-                setError({ type: "Error", message: err.response.data.message });
+                setError({ type: "Error", message: err.response.message });
             }); 
         }
     };
@@ -82,7 +82,7 @@ const DepositForm = (props) => {
         GetReceiver()
         .then(res => setReceiver(res.data.data.receiver))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err.response.message });
         }); 
     }, []);
 

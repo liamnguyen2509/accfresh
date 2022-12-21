@@ -20,7 +20,7 @@ const OrderDetails = (props) => {
         GetAccountsByOrder(orderId)
         .then(res => setAccounts(res.data.data))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err.response.message });
         });
     }, []);
 

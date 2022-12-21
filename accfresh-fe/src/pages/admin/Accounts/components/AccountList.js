@@ -13,7 +13,7 @@ const AccountList = () => {
         GetAccounts()
         .then(res => setAccounts(res.data.data.accounts))
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err.response.message });
         });
     }, []);
 
