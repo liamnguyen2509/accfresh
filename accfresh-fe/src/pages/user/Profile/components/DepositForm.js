@@ -115,8 +115,8 @@ const DepositForm = (props) => {
                             <input className={`${classes.input} heading-SB`} type="text" value={amount} disabled />
                         </div>
                     </div>
-                    <input type="hidden" name="STATUS_URL" value={`${process.env.REACT_APP_BASE_URL}/payment/${payment.paymentId}`} />
-                    <input type="hidden" name="PAYMENT_URL" value={`${process.env.REACT_APP_BASE_URL}/payment/${payment.paymentId}`} />
+                    <input type="hidden" name="STATUS_URL" value={`${process.env.REACT_APP_BASE_URL}/payments/${payment.paymentId}`} />
+                    <input type="hidden" name="PAYMENT_URL" value={`${process.env.REACT_APP_BASE_URL}/payments/${payment.paymentId}`} />
                     <input type="hidden" name="PAYMENT_URL_METHOD" value="POST" />
                     <input type="hidden" name="NOPAYMENT_URL" value={process.env.REACT_APP_BASE_URL} />
                     <input type="hidden" name="NOPAYMENT_URL_METHOD" value="GET" />

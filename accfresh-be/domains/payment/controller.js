@@ -107,8 +107,8 @@ const getLastedPayment = async () => {
     return payments[0];
 }
 
-const getPaymentById = async (id) => {
-    const payment = await Payment.findOne({ paymentId: id });
+const getPaymentById = async (userId, paymentId) => {
+    const payment = await Payment.findOne({ user: userId, paymentId: paymentId });
     const paymentStatus = await axios.post(EXTERNAL_ENDPOINT.AUTOPAYMENT_CHECK_STATUS, 
         { 
             id: payment.paymentId
