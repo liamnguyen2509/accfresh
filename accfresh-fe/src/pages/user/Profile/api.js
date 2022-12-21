@@ -12,3 +12,5 @@ export const GetRate = (send, sendCurrency, receive, receiveCurrency, amount) =>
 export const SendDeposit = (request) => {
     return axios.post(`${process.env.REACT_APP_API_URL}/payment/deposit`, request);
 }
+
+export const GetBalance = (userId) => axios.post(`${process.env.REACT_APP_API_URL}/user/balance`, { userId })

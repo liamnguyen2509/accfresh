@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import Layout from "../../../../components/Layout/Layout";
 import classes from './Payment.module.css';
 
 import { GetPayment } from "../api";
-import { useParams } from "react-router-dom";
+import { GetBalance } from "../../Profile/api";
+import { useNavigate, useParams } from "react-router-dom";
+import AuthContext from "../../../../store/authContext";
 
 const PaymentForm = (props) => {
+    const authCtx = useContext(AuthContext);
+    const navigate = useNavigate();
     const { paymentId } = useParams();
     const [error, setError] = useState({});
     const [payment, setPayment] = useState({
@@ -19,15 +23,26 @@ const PaymentForm = (props) => {
         status: "completed"
     });
 
+    if (!authCtx.isLogged) { navigate("/login"); };
+
     useEffect(() => {
         GetPayment(localStorage.getItem("uid"), paymentId)
-        .then(res => setPayment({
-            ...payment,
-            paymentId: res.data.data.paymentId,
-            paymentAmount: res.data.data.paymentAmount,
-            suggestedMemo: res.data.data.suggestedMemo,
-            status: res.data.data.status
-        }))
+        .then(res => { 
+            setPayment({
+                ...payment,
+                paymentId: res.data.data.paymentId,
+                paymentAmount: res.data.data.paymentAmount,
+                suggestedMemo: res.data.data.suggestedMemo,
+                status: res.data.data.status,
+                isDeposit: res.data.data.isDeposit
+            });
+
+            GetBalance(localStorage.getItem("uid"))
+            .then(res => localStorage.setItem("balance", res.data.data.$numberDecimal))
+            .catch(err => {
+                setError({ type: "Error", message: err.response.message });
+            }); 
+        })
         .catch(err => {
             setError({ type: "Error", message: err.response.message });
         }); 
@@ -76,8 +91,9 @@ const PaymentForm = (props) => {
                                         <input type="hidden" name="PAYMENT_UNITS" value={payment.paymentUnit} />
                                         <input type="hidden" name="PAYMENT_AMOUNT" value={payment.paymentAmount} />
                                         <div className="action">
-                                            {payment.status === "pending" && <input className="button heading-SB" style={{ backgroundColor: "green" }} type="submit" value="Confirm Payment" />}
-                                            {payment.status === "done" && <input className="button heading-SB" style={{ backgroundColor: "green" }} type="submit" value="Payment Completed" disabled/>}
+                                            {payment.status === "pending" && <input className="button heading-SB" style={{ backgroundColor: "green" }} type="submit" value="Checking status" />}
+                                            {payment.status === "done" && !payment.isDeposit && <input className="button heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none", color: "green" }} type="button" value="Payment Completed and updating balance" disabled/>}
+                                            {payment.status === "done" && payment.isDeposit && <input className="btn-primary-2 heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none" }} type="button" value="Payment Deposited to wallet" disabled/>}
                                         </div>
                                     </form>
                                     <p className="text heading-S" style={{ color: "orange", padding: "20px 0 0 0" }}>{error && error.message}</p>

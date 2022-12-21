@@ -17,7 +17,6 @@ const validateUser = async (email, password) => {
 
 const authenticateUser = async (email, password) => {
     const fetchedUser = await User.findOne({ email }).populate('wallet');
-    console.log(fetchedUser);
     if (!fetchedUser) throw Error("Invalid credentials. Your email is not exist.");
 
     const passwordHash = sha256(password);
@@ -66,4 +65,9 @@ const registerUser = async (username, email, password) => {
     return registedUser;
 }
 
-module.exports = { validateUser, authenticateUser, registerUser }
+const GetBalance = async (userId) => {
+    const user = await User.findById(userId).populate('wallet');
+    return user.wallet.balance;
+}
+
+module.exports = { validateUser, authenticateUser, registerUser, GetBalance }

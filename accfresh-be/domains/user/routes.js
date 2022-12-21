@@ -1,5 +1,5 @@
 // domain functions
-const { validateUser, authenticateUser, registerUser } = require('./controller');
+const { validateUser, authenticateUser, registerUser, GetBalance } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
@@ -33,6 +33,18 @@ router.post('/signup', async(req, res) => {
     try {
         const registedUser = await registerUser(username, email, password);
         res.status(200).json(responseJSON('S', 'Registering User successful.', { user: registedUser }));
+    } catch (e) {
+        res.status(400).json(responseJSON('SWR', e.message));
+    }
+});
+
+// balance
+router.post('/balance', async(req, res) => {
+    const { userId } = req.body;
+
+    try {
+        const balance = await GetBalance(userId);
+        res.status(200).json(responseJSON('S', "Get User's balance successful.", balance));
     } catch (e) {
         res.status(400).json(responseJSON('SWR', e.message));
     }

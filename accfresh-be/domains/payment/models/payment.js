@@ -11,6 +11,7 @@ const PaymentSchema = new Schema({
     payeeName: String,
     suggestedMemo: String,
     status: String,
+    isDeposit: Boolean,
     user: {type: mongoose.Types.ObjectId, ref: "users"}
 }, { timestamps: true });
 

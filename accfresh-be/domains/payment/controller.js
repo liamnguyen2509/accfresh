@@ -3,6 +3,7 @@ const axios = require('axios');
 const Admin = require('../admin/model');
 const User = require('../user/models/user');
 const Payment = require('./models/payment');
+const Wallet = require('../user/models/wallet');
 
 const EXTERNAL_ENDPOINT = require('./externalEndPoint');
 
@@ -59,7 +60,8 @@ const deposit = async (request) => {
         payeeAccount: "U9674906",
         payeeName: "AutopayPM.Com",
         suggestedMemo: valueMemo,
-        user: userRequest
+        user: userRequest,
+        isDeposit: false
     });
 
     const requestedPayment = payment.save().catch((err) => {
@@ -109,19 +111,40 @@ const getLastedPayment = async () => {
 
 const getPaymentById = async (userId, paymentId) => {
     const payment = await Payment.findOne({ user: userId, paymentId: paymentId });
-    const paymentStatus = await axios.post(EXTERNAL_ENDPOINT.AUTOPAYMENT_CHECK_STATUS, 
-        { 
-            id: payment.paymentId
-        }, { timeout: 5000, headers: { 'Content-Type': 'multipart/form-data', "Accept-Encoding": "gzip,deflate,compress" } })
-        .then((response) => response.data)
-        .catch((err) => { throw Error(err.message) });
+    if (payment.isDeposit) {
+        return payment;
+    } else {
+        const paymentStatus = await axios.post(EXTERNAL_ENDPOINT.AUTOPAYMENT_CHECK_STATUS, 
+            { 
+                id: payment.paymentId
+            }, { timeout: 5000, headers: { 'Content-Type': 'multipart/form-data', "Accept-Encoding": "gzip,deflate,compress" } })
+            .then((response) => response.data)
+            .catch((err) => { throw Error(err.message) });
+        
+        payment.status = paymentStatus.status;
+        await payment.save().catch((err) => {
+            throw Error("Get Payment failed.");
+        });
     
-    payment.status = paymentStatus.status;
-    await payment.save().catch((err) => {
-        throw Error("Get Payment failed.");
-    });
-
-    return payment;
+        if (paymentStatus.status === 'done') {
+            payment.isDeposit = true;
+            await payment.save().catch((err) => {
+                throw Error("Update Payment failed.");
+            });
+    
+            const user = await User.findById(userId);
+            const wallet = await Wallet.findById(user.wallet._id);
+            
+            wallet.previousBalance = wallet.balance;
+            wallet.balance = parseFloat(wallet.balance) + parseFloat(payment.paymentAmount);
+            
+            await wallet.save().catch((err) => {
+                throw Error("Update Wallet failed.");
+            });
+        }
+    
+        return payment;
+    }
 }
 
 const getPaymentsByUser = async (userId) => {

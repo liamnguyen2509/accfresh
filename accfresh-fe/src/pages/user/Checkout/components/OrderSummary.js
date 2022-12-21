@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { SubmitOrder } from "../api";
+import { GetBalance } from "../../Profile/api";
 import CartContext from "../../../../store/cartContext";
 
 const OrderSummary = () => {
@@ -16,7 +17,19 @@ const OrderSummary = () => {
             totalAmount: cartCtx.totalAmount.toFixed(2),
             items: cartCtx.items
         })
-        .then(res => res.data.data ? navigate("/orders") : "")
+        .then(res => { 
+            if (res.data.data) {
+                GetBalance(localStorage.getItem("uid"))
+                .then(res => localStorage.setItem("balance", res.data.data.$numberDecimal))
+                .catch(err => {
+                    setError({ type: "Error", message: err.response.message });
+                }); 
+
+                cartCtx.clearCart();
+
+                navigate("/orders");
+            }
+        })
         .catch(err => {
             setError({ type: "Error", message: err });
         });

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import AuthContext from "../../store/authContext";
@@ -7,10 +7,15 @@ const Profile = (props) => {
     const context = useContext(AuthContext);
 
     const [isOpen, setIsOpen] = useState(false);
+    const [balance, setBalance] = useState(localStorage.getItem("balance"));
 
     const onClickHandler = () => {
         setIsOpen(!isOpen);
     }
+
+    useEffect(() => {
+        setBalance(localStorage.getItem("balance"));
+    }, [balance]);
 
     const profileDropdownClasses = isOpen
         ? "profile-pop-otr profile-pop-open" : "profile-pop-otr";
