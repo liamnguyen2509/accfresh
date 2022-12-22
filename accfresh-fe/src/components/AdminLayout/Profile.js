@@ -35,10 +35,10 @@ const Profile = (props) => {
                 </div>
                 <ul className="link-profile-ul">
                     <li className="link-profile-li">
-                        <Link to="/profile" className="link-profile-a heading-SB"> Edit Profile </Link>
+                        <Link to="/admin/profile" className="link-profile-a heading-SB"> Edit Profile </Link>
                     </li>
                     <li className="link-profile-li">
-                        <Link to="/" className="link-profile-a heading-SB" onClick={context.onLogout}> Logout </Link>
+                        <Link to="/admin" className="link-profile-a heading-SB" onClick={context.onLogout}> Logout </Link>
                     </li>
                 </ul>
             </div>

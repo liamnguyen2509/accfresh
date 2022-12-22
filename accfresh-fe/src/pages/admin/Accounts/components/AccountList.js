@@ -5,17 +5,23 @@ import classes from './Account.module.css';
 
 import { GetAccounts } from "../api";
 
-const AccountList = () => {
+const AccountList = (props) => {
     const [accounts, setAccounts] = useState([]);
     const [error, setError] = useState({});
 
     useEffect(() => {
-        GetAccounts()
-        .then(res => setAccounts(res.data.data.accounts))
+        GetAccounts(props.query, props.page)
+        .then(res => { 
+            if (res.data.data.accounts.length > 0) {
+                setAccounts(res.data.data.accounts) 
+            } else {
+                props.onLastPage(true);
+            }
+        })
         .catch(err => {
             setError({ type: "Error", message: err.response.message });
         });
-    }, []);
+    }, [props.query, props.page]);
 
     return (
         <div className={`col-detail-inr ${classes["account-content-panel"]}`}>

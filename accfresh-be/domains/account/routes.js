@@ -9,7 +9,9 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const accounts = await getAccounts();
+        const query = req.query.query;
+        const page = req.query.page - 1;
+        const accounts = await getAccounts(query, page);
         res.status(200).json(responseJSON('S', 'Get Accounts successful.', { accounts: accounts }));
     } catch (e) {
         res.status(400).json(responseJSON('SWR', e.message));

@@ -26,26 +26,36 @@ const PaymentForm = (props) => {
     if (!authCtx.isLogged) { navigate("/login"); };
 
     useEffect(() => {
-        GetPayment(localStorage.getItem("uid"), paymentId)
-        .then(res => { 
-            setPayment({
-                ...payment,
-                paymentId: res.data.data.paymentId,
-                paymentAmount: res.data.data.paymentAmount,
-                suggestedMemo: res.data.data.suggestedMemo,
-                status: res.data.data.status,
-                isDeposit: res.data.data.isDeposit
-            });
-
-            GetBalance(localStorage.getItem("uid"))
-            .then(res => localStorage.setItem("balance", res.data.data.$numberDecimal))
+        const loadPayment = () => {
+            GetPayment(localStorage.getItem("uid"), paymentId)
+            .then(res => { 
+                setPayment({
+                    ...payment,
+                    paymentId: res.data.data.paymentId,
+                    paymentAmount: res.data.data.paymentAmount,
+                    suggestedMemo: res.data.data.suggestedMemo,
+                    status: res.data.data.status,
+                    isDeposit: res.data.data.isDeposit
+                });
+    
+                GetBalance(localStorage.getItem("uid"))
+                .then(res => localStorage.setItem("balance", res.data.data.$numberDecimal))
+                .catch(err => {
+                    setError({ type: "Error", message: err.response.message });
+                }); 
+            })
             .catch(err => {
                 setError({ type: "Error", message: err.response.message });
-            }); 
-        })
-        .catch(err => {
-            setError({ type: "Error", message: err.response.message });
-        }); 
+            });
+        }
+         
+        loadPayment();
+
+        const interval = setInterval(() => {
+            loadPayment();
+        }, 2000);
+
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -65,7 +75,7 @@ const PaymentForm = (props) => {
                                             </div>
                                             <div className={classes["info-btn"]}>
                                                 <p className={`${classes.label} heading-S`}>Status</p>
-                                                {payment.status === "pending" && <p className={`${classes.pending} heading-SB`}>{payment.status}</p>}
+                                                {(payment.status === "pending" || payment.status === "sending") && <p className={`${classes.pending} heading-SB`}>{payment.status}</p>}
                                                 {payment.status === "done" && <p className={`${classes.completed} heading-SB`}>{payment.status}</p>}
                                             </div>
                                         </div>
@@ -79,9 +89,9 @@ const PaymentForm = (props) => {
                                                 <p className={`${classes.completed} heading-SB`}>Verified</p>
                                             </div>
                                         </div>
-                                        <input type="hidden" name="STATUS_URL" value={`${process.env.REACT_APP_BASE_URL}/payment/${payment.paymentId}`} />
-                                        <input type="hidden" name="PAYMENT_URL" value={`${process.env.REACT_APP_BASE_URL}/payment/${payment.paymentId}`} />
-                                        <input type="hidden" name="PAYMENT_URL_METHOD" value="POST" />
+                                        <input type="hidden" name="STATUS_URL" value={`${process.env.REACT_APP_BASE_URL}/payments/${payment.paymentId}`} />
+                                        <input type="hidden" name="PAYMENT_URL" value={`${process.env.REACT_APP_BASE_URL}/payments/${payment.paymentId}`} />
+                                        <input type="hidden" name="PAYMENT_URL_METHOD" value="GET" />
                                         <input type="hidden" name="NOPAYMENT_URL" value={process.env.REACT_APP_BASE_URL} />
                                         <input type="hidden" name="NOPAYMENT_URL_METHOD" value="GET" />
                                         <input type="hidden" name="PAYMENT_ID" value={payment.paymentId} />
@@ -91,8 +101,8 @@ const PaymentForm = (props) => {
                                         <input type="hidden" name="PAYMENT_UNITS" value={payment.paymentUnit} />
                                         <input type="hidden" name="PAYMENT_AMOUNT" value={payment.paymentAmount} />
                                         <div className="action">
-                                            {payment.status === "pending" && <input className="button heading-SB" style={{ backgroundColor: "green" }} type="submit" value="Checking status" />}
-                                            {payment.status === "done" && !payment.isDeposit && <input className="button heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none", color: "green" }} type="button" value="Payment Completed and updating balance" disabled/>}
+                                            {payment.status === "pending" && <input className="button heading-SB" style={{ backgroundColor: "green" }} type="submit" value="Continue Payment" />}
+                                            {payment.status === "sending" && <input className="button heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none", color: "green" }} type="button" value="Payment Sending..." disabled/>}
                                             {payment.status === "done" && payment.isDeposit && <input className="btn-primary-2 heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none" }} type="button" value="Payment Deposited to wallet" disabled/>}
                                         </div>
                                     </form>

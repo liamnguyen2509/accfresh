@@ -2,6 +2,10 @@
         Theme Color's
 ====================================*/
 
+.navbar-main-2 .container-fluid .wrapper .navigation-otr .navigation-inr .navigation-li .active {
+  color: #0d6efd !important;
+}
+
 /*====================================
         Theme Fonts Size's
 ====================================*/
