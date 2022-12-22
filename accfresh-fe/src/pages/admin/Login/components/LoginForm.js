@@ -25,7 +25,7 @@ const LoginForm = () => {
             return true;
         })
         .catch(err => {
-            setError({ type: "Error", message: err });
+            setError({ type: "Error", message: err.response.message });
         });
     }
 

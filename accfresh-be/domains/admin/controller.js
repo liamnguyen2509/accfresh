@@ -32,4 +32,18 @@ const authenticateAdmin = async (email, password) => {
     }
 }
 
-module.exports = { validateAdmin, authenticateAdmin }
+const getInfo = async (email) => {
+    const admin = await Admin.findOne({ email: email });
+    return admin;
+}
+
+const updateBankAccount = async (name, account) => {
+    const admin = await Admin.findOne();
+    admin.bank = name;
+    admin.bankAccount = account;
+
+    const updatedAdmin = await admin.save();
+    return updatedAdmin;
+}
+
+module.exports = { validateAdmin, authenticateAdmin, getInfo, updateBankAccount }

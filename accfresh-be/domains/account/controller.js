@@ -4,8 +4,8 @@ const OrderDetails = require('../order/models/orderDetails');
 const Account = require('./model');
 const Product = require('../product/model');
 
-const getAccounts = async () => {
-    const accounts = await Account.find({}).populate("product");
+const getAccounts = async (query, page) => {
+    const accounts = await Account.find({ content: { $regex: query, $options: "i" } }).sort({ createdAt: -1 }).populate("product").skip(page * 20).limit(20);
     return accounts;
 }
 
