@@ -12,9 +12,12 @@ const PaymentItem = (props) => {
         <tr style={{ verticalAlign: "middle" }}>
             <td>{props.order}</td>
             <td>{props.id}</td>
+            <td>{props.type === 5 ? "Perfect Money Evoucher" : "Perfect Money"}</td>
             <td>{props.amount} {props.unit}</td>
             <td>{!props.status ? "" : props.status === "pending"
                     ? <span style={{ color: "orange", fontWeight: "bold" }}>{props.status.toUpperCase()}</span> 
+                    : props.status === "delete" 
+                    ? <span style={{ color: "red", fontWeight: "bold" }}>{props.status.toUpperCase()}</span>
                     : <span style={{ color: "green", fontWeight: "bold" }}>{props.status.toUpperCase()}</span>
                 }</td>
             <td>{props.payDate}</td>

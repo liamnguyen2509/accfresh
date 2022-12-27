@@ -3,7 +3,7 @@
     background-color: #222F45;
     width: 40%;
     border-radius: 24px;
-    padding: 48px 64px 56px 64px;
+    padding: 10px 64px 56px 64px;
     top: 25%;
     left: 30%;
     right: 0;
@@ -17,6 +17,12 @@
     opacity: 1;
     visibility: visible;
     transition: 0.3s;
+}
+
+.header {
+    display: flex;
+    justify-content: right;
+    color: #FFF;
 }
 
 .content {
@@ -61,6 +67,10 @@
 .form-main .input-main {
     display: flex;
     align-items: center;
+}
+
+.form-main .input-main:not(:last-child) {
+    margin: 15px 0;
 }
 
 .content .form-main .input-main .input-otr {

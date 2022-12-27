@@ -44,18 +44,23 @@ const deposit = async (request) => {
     .then((response) => response.data)
     .catch((err) => { throw Error(err.message) });
 
-    const userRequest = await User.findOne({ email: request.senderEmail });
-
-    const inputElementMemo = transaction.content.split('\r\n')[8];
-    const memoValueRegex = /value="[A-Za-z0-9]+"/g;
-    const valueAttributeMemo = inputElementMemo.match(memoValueRegex);
-    const valueMemo = valueAttributeMemo[0].split('"')[1];
+    const userRequest = await User.findById(request.senderId);
+    
+    let valueMemo = "";
+    if (request.send === 4) {
+        const inputElementMemo = transaction.content.split('\r\n')[8];
+        const memoValueRegex = /value="[A-Za-z0-9]+"/g;
+        const valueAttributeMemo = inputElementMemo.match(memoValueRegex);
+        valueMemo = valueAttributeMemo[0].split('"')[1];
+    } // PM ELSE send === 5 => PM Voucher
+    
 
     const payment = new Payment({
         paymentId: transaction.id,
         paymentTime: transaction.time,
         paymentUnit: "USD",
         paymentAmount: request.amount,
+        paymentType: request.send,
         type: transaction.type,
         payeeAccount: "U9674906",
         payeeName: "AutopayPM.Com",
@@ -70,6 +75,28 @@ const deposit = async (request) => {
 
     return requestedPayment;
 }   
+
+const transferEvoucher = async (request) => {
+    await axios.post(EXTERNAL_ENDPOINT.AUTOPAYMENT_TRANSFER_EVOUCHER, 
+        { 
+            in_ecurr: request.paymentType, 
+            confirm: request.paymentId, 
+            pm_number: request.activationNumber, 
+            pm_code: request.activationCode
+        }, { timeout: 5000, headers: { 'Content-Type': 'multipart/form-data', "Accept-Encoding": "gzip,deflate,compress" } })
+        .then((response) => response.data)
+        .catch((err) => { throw Error(err.message) });
+
+    const payment = await Payment.findOne({ paymentId: request.paymentId });
+    payment.activationNumber = request.activationNumber;
+    payment.activationCode = request.activationCode;
+
+    const requestedPayment = payment.save().catch((err) => {
+        throw Error("Request Deposit failed.");
+    });
+
+    return requestedPayment;
+}
 
 const requestPerfectMoney = async (request) => {
     const payment = await axios.post(EXTERNAL_ENDPOINT.PERFECTMONEY_REQUEST_PAYMENT, 
@@ -157,4 +184,4 @@ const getPayments = async () => {
     return payments;
 }
 
-module.exports = { getReceiver, getRate, deposit, requestPerfectMoney, getLastedPayment, getPaymentById, getPaymentsByUser, getPayments }
+module.exports = { getReceiver, getRate, deposit, requestPerfectMoney, getLastedPayment, getPaymentById, getPaymentsByUser, getPayments, transferEvoucher }

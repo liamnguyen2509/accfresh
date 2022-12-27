@@ -21,7 +21,7 @@ const ProductList = () => {
                         product: orderDetail.product.name,
                         quantity: orderDetail.quantity,
                         amount: orderDetail.amount.$numberDecimal,
-                        orderDate: Moment(order.createdAt).format('d-MMM-yyyy h:mm A')
+                        orderDate: Moment(order.createdAt).format('dd-MMM-yyyy h:mm A')
                     });
                 }
             }

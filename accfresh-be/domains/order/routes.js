@@ -3,6 +3,7 @@ const { getOrders, submitOrder, getOrdersByUser } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
+const { userAuthVerification } = require('../../util/jwt');
 
 const express = require('express');
 const router = express.Router();
@@ -18,13 +19,18 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/byUser', async (req, res) => {
-    try {
-        const { userId } = req.body;
-        const orders = await getOrdersByUser(userId);
-        res.status(200).json(responseJSON('S', 'Get Orders successful.', orders));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
+    let { authorization } = req.headers;
+
+    userAuthVerification(authorization)
+    .then(async () => { 
+        try {
+            const { userId } = req.body;
+            const orders = await getOrdersByUser(userId);
+            res.status(200).json(responseJSON('S', 'Get Orders successful.', orders));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 router.post('/', async (req, res) => {

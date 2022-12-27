@@ -42,7 +42,7 @@ const AccountList = () => {
                                 order={index + 1}
                                 content={account.content}
                                 product={account.product.name}
-                                orderDate={Moment(account.updatedAt).format('d-MMM-yyyy')}
+                                orderDate={Moment(account.updatedAt).format('dd-MMM-yyyy')}
                             />
                         ))
                     }
