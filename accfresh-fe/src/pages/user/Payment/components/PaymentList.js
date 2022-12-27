@@ -48,7 +48,7 @@ const PaymentList = () => {
                                 unit={payment.paymentUnit}
                                 status={payment.status}
                                 type={payment.paymentType}
-                                payDate={Moment(payment.createdAt).format('dd-MMM-yyyy')}
+                                payDate={Moment(payment.createdAt).format('D-MMM-yyyy')}
                             />
                         ))
                     }
