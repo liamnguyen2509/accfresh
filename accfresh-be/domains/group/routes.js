@@ -3,6 +3,7 @@ const { getGroups } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
+const { userAuthVerification } = require('../../util/jwt');
 
 const express = require('express');
 const router = express.Router();

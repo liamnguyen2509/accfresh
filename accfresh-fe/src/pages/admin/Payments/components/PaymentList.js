@@ -51,7 +51,7 @@ const PaymentList = () => {
                                 payee={payment.payeeName}
                                 memo={payment.suggestedMemo}
                                 status={payment.status}
-                                payDate={Moment(payment.createdAt).format('d-M-yyyy')}
+                                payDate={Moment(payment.createdAt).format('dd-M-yyyy')}
                             />
                         ))
                     }

@@ -49,7 +49,7 @@ const OrderList = () => {
                                     ))
                                 }
                                 totalAmount={order.totalAmount.$numberDecimal}
-                                orderDate={Moment(order.createdAt).format('d-M-yyyy')}
+                                orderDate={Moment(order.createdAt).format('dd-M-yyyy')}
                             />
                         ))
                     }

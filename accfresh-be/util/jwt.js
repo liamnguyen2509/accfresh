@@ -1,4 +1,6 @@
 let jwt = require('jsonwebtoken');
+const User = require('../domains/user/models/user');
+const Admin = require('../domains/admin/model');
 
 module.exports = {
     newAuthToken: () => {
@@ -14,11 +16,6 @@ module.exports = {
 
     adminAuthVerification: (auth_token) => {
       return new Promise(async (resolve, reject) => {
-        // if (dev) {
-        //   resolve({
-        //     status: true,
-        //   });
-        // }
         let tokenDoc = await Admin.findOne({ auth_token }).catch((err) => {
           reject({
             status: false,
@@ -49,11 +46,6 @@ module.exports = {
     },
     userAuthVerification: (auth_token) => {
       return new Promise(async (resolve, reject) => {
-        if (dev) {
-          resolve({
-            status: true,
-          });
-        }
         let tokenDoc = await User.findOne({ auth_token }).catch((err) => {
           reject({
             status: false,

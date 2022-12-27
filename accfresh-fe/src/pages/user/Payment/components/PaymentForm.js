@@ -35,7 +35,10 @@ const PaymentForm = (props) => {
                     paymentAmount: res.data.data.paymentAmount,
                     suggestedMemo: res.data.data.suggestedMemo,
                     status: res.data.data.status,
-                    isDeposit: res.data.data.isDeposit
+                    isDeposit: res.data.data.isDeposit,
+                    paymentType: res.data.data.paymentType,
+                    activationNumber: res.data.data.activationNumber,
+                    activationCode: res.data.data.activationCode
                 });
     
                 GetBalance(localStorage.getItem("uid"))
@@ -68,6 +71,19 @@ const PaymentForm = (props) => {
                                 <div className="content">
                                     <h4 className="text heading-h4">Payment Information</h4>
                                     <form className="form-main" method="post" action={payment.status === "pending" ? "https://perfectmoney.com/api/step1.asp" : ""}>
+                                        {
+                                            payment.paymentType === 5 && 
+                                            <div className="btn-main">
+                                                <div className={classes["info-btn"]}>
+                                                    <p className={`${classes.label} heading-S`}>Activation Number</p>
+                                                    <p className={`${classes.value} heading-SB`}>{payment.activationNumber}</p>
+                                                </div>
+                                                <div className={classes["info-btn"]}>
+                                                    <p className={`${classes.label} heading-S`}>Activation Code</p>
+                                                    <p className={`${classes.value} heading-SB`}>{payment.activationCode}</p>
+                                                </div>
+                                            </div>
+                                        }
                                         <div className="btn-main">
                                             <div className={classes["info-btn"]}>
                                                 <p className={`${classes.label} heading-S`}>Amount</p>
@@ -77,6 +93,7 @@ const PaymentForm = (props) => {
                                                 <p className={`${classes.label} heading-S`}>Status</p>
                                                 {(payment.status === "pending" || payment.status === "sending") && <p className={`${classes.pending} heading-SB`}>{payment.status}</p>}
                                                 {payment.status === "done" && <p className={`${classes.completed} heading-SB`}>{payment.status}</p>}
+                                                {payment.status === "delete" && <p className={`${classes.delete} heading-SB`}>{payment.status}</p>}
                                             </div>
                                         </div>
                                         <div className="btn-main">
@@ -102,8 +119,9 @@ const PaymentForm = (props) => {
                                         <input type="hidden" name="PAYMENT_AMOUNT" value={payment.paymentAmount} />
                                         <div className="action">
                                             {payment.status === "pending" && <input className="button heading-SB" style={{ backgroundColor: "green" }} type="submit" value="Continue Payment" />}
-                                            {payment.status === "sending" && <input className="button heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none", color: "green" }} type="button" value="Payment Sending..." disabled/>}
+                                            {payment.status === "sending" && <input className="button heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none", color: "green" }} type="button" value="Waiting for payment sending..." disabled/>}
                                             {payment.status === "done" && payment.isDeposit && <input className="btn-primary-2 heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none" }} type="button" value="Payment Deposited to wallet" disabled/>}
+                                            {payment.status === "delete" && <input className="button heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none", color: "red" }} type="button" value="Payment Cancelled" disabled/>}
                                         </div>
                                     </form>
                                     <p className="text heading-S" style={{ color: "orange", padding: "20px 0 0 0" }}>{error && error.message}</p>

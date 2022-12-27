@@ -4,6 +4,7 @@ const { validateUser, authenticateUser, registerUser, GetBalance } = require('./
 // utils
 const { responseJSON } = require('../../util/responseJSON');
 const { validateEmail } = require('../../util/email');
+const { userAuthVerification } = require('../../util/jwt');
 
 const express = require('express');
 const router = express.Router();
@@ -40,14 +41,18 @@ router.post('/signup', async(req, res) => {
 
 // balance
 router.post('/balance', async(req, res) => {
+    let { authorization } = req.headers;
     const { userId } = req.body;
-
-    try {
-        const balance = await GetBalance(userId);
-        res.status(200).json(responseJSON('S', "Get User's balance successful.", balance));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
+    
+    userAuthVerification(authorization)
+    .then(async () => {
+        try {
+            const balance = await GetBalance(userId);
+            res.status(200).json(responseJSON('S', "Get User's balance successful.", balance));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 module.exports = router;
