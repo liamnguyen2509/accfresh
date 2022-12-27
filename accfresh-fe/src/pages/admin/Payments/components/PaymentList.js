@@ -29,6 +29,7 @@ const PaymentList = () => {
                     <tr>
                         <th>#</th>
                         <th>ID</th>
+                        <th>TYPE</th>
                         <th>AMOUNT</th>
                         <th>PAYER</th>
                         <th>PAYEE</th>
@@ -51,7 +52,8 @@ const PaymentList = () => {
                                 payee={payment.payeeName}
                                 memo={payment.suggestedMemo}
                                 status={payment.status}
-                                payDate={Moment(payment.createdAt).format('dd-M-yyyy')}
+                                type={payment.paymentType}
+                                payDate={Moment(payment.createdAt).format('D-M-yyyy')}
                             />
                         ))
                     }
