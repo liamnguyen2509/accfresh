@@ -118,7 +118,7 @@ const PaymentForm = (props) => {
                                         <input type="hidden" name="PAYMENT_UNITS" value={payment.paymentUnit} />
                                         <input type="hidden" name="PAYMENT_AMOUNT" value={payment.paymentAmount} />
                                         <div className="action">
-                                            {payment.status === "pending" && <input className="button heading-SB" style={{ backgroundColor: "green" }} type="submit" value="Continue Payment" />}
+                                            {payment.status === "pending" && payment.paymentType !== 5 && <input className="button heading-SB" style={{ backgroundColor: "green" }} type="submit" value="Continue Payment" />}
                                             {payment.status === "sending" && <input className="button heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none", color: "green" }} type="button" value="Waiting for payment sending..." disabled/>}
                                             {payment.status === "done" && payment.isDeposit && <input className="btn-primary-2 heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none" }} type="button" value="Payment Deposited to wallet" disabled/>}
                                             {payment.status === "delete" && <input className="button heading-SB" style={{ backgroundColor: "unset", width: "100%", border: "none", color: "red" }} type="button" value="Payment Cancelled" disabled/>}
