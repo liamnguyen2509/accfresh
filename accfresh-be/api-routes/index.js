@@ -8,6 +8,7 @@ const AccountRoutes = require('../domains/account');
 const PaymentRoutes = require('../domains/payment');
 const OrderRoutes = require('../domains/order');
 const GroupsRoutes = require('../domains/group');
+const AWSRoutes = require('../domains/aws');
 
 router.use('/user', UserRoutes);
 router.use('/admin', AdminRoutes);
@@ -16,5 +17,6 @@ router.use('/account', AccountRoutes);
 router.use('/payment', PaymentRoutes);
 router.use('/order', OrderRoutes);
 router.use('/group', GroupsRoutes);
+router.use('/aws', AWSRoutes);
 
 module.exports = router;

@@ -17,7 +17,7 @@ const NavbarMain = () => {
                             <img className="logo-img" src={"/assets/img/brand-logo.png"} alt="brand-logo" />
                         </a>
                     </div>
-                    <Navigation />
+                    {authCtx.isLogged && <Navigation />}
                     <div className="action-nav">
                         {authCtx.isLogged && <Profile />}
                     </div>
