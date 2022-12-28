@@ -43,7 +43,7 @@ const FeatureSection = () => {
                                 key={group.id}
                                 id={group.id}
                                 name={group.name} 
-                                image={group.image} 
+                                image={`${process.env.REACT_APP_IMAGE_BASE_URL}${group.image}`} 
                                 stock={group.stock} 
                                 price={group.price.$numberDecimal} 
                                 onClick={onGroupClickHandler} />

@@ -19,11 +19,56 @@ const getGroups = async () => {
             image: group.image,
             stock: total.stock,
             sold: total.sold,
-            price: productsByGroups.sort((a, b) => a.price - b.price)[0].price,
+            price: productsByGroups.length > 0 ? productsByGroups.sort((a, b) => a.price - b.price)[0].price : 0,
             isActive: group.isActive
         });
     }
     return returnGroups;
 }
 
-module.exports = { getGroups }
+const createGroup = async (requestGroup) => {
+    const existingGroup = await Group.findOne({ name: requestGroup.name });
+
+    if (existingGroup) {
+        throw Error(`Group name ${requestGroup.name} already existed.`);
+    } else {
+        const newGroup = new Group({
+            name: requestGroup.name,
+            image: requestGroup.image,
+            isActive: true
+        });
+    
+        const group = await newGroup.save().catch((err) => {
+            throw Error("Create Group failed.");
+        });
+    
+        return group;
+    }
+}
+
+const updateGroup = async (requestGroup) => {
+    const groupUpdate = await Group.findById(requestGroup.id);
+
+    if (!groupUpdate) {
+        throw Error(`Group name ${requestGroup.name} not exist.`);
+    } else {
+        groupUpdate.name = requestGroup.name;
+        if (requestGroup.image) {
+            groupUpdate.image = requestGroup.image;
+        }
+    
+        const updatedGroup = await groupUpdate.save().catch((err) => {
+            throw Error("Create Group failed.");
+        });
+    
+        return updatedGroup;
+    }
+}
+
+const deleteGroup = async (groupId) => {
+    await Group.deleteOne({ _id: groupId }).catch((err) => {
+        throw Error("Delete Group failed.");
+    });;
+}
+
+module.exports = { getGroups, deleteGroup, createGroup, updateGroup }
