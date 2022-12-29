@@ -20,40 +20,44 @@ const OrderList = () => {
 
     const onSearchHandler = (e) => {
         setSearchTerm(e.target.value);
+        currentPage.current = 1;
+        setPaging({ ...paging, page: currentPage.current });
     }
 
     const onPageChangeHandler = (e) => {
+        console.log(e.target.value);
+        console.log(totalPages);
         if (e.target.value === "0" || isNaN(e.target.value) || e.target.value > totalPages) {
+            console.log("aaaaaa")
             setPaging({ ...paging, page: currentPage.current });
         } else {
             if (e.target.value !== "") {
                 currentPage.current = e.target.value;
-                setPaging({ ...paging, page: e.target.value });
+                if (currentPage.current === 1) {
+                    setPaging({ ...paging, page: currentPage.current, isPrev: false });
+                } else {
+                    setPaging({ ...paging, page: currentPage.current });
+                }
             }
-        }
-
-        if (currentPage.current > 1) {
-            setPaging({ ...paging, isPrev: true, isNext: true });
-        } else {
-            setPaging({ ...paging, isPrev: true, isNext: true });
         }
     } 
 
     const onPrevHandler = () => {
-        currentPage.current--;
-        setPaging({ ...paging, page: currentPage.current });
-
-        if (currentPage.current === 1) {
-            setPaging({ ...paging, isPrev: false, isNext: totalPages > 1 ? true : false });
+        if (currentPage.current <= 1) {
+            setPaging({ ...paging, page: 1, isPrev: false, isNext: totalPages > 1 ? true : false });
+        } else {
+            currentPage.current--;
+            setPaging({ ...paging, page: currentPage.current });
         }
     }
 
     const onNextHandler = () => {
         currentPage.current++;
-        setPaging({ ...paging, page: currentPage.current });
 
         if (currentPage.current === totalPages) {
             setPaging({ ...paging, isPrev: true, isNext: false });
+        } else {
+            setPaging({ ...paging, page: currentPage.current, isPrev: true });
         }
     }
 
@@ -77,9 +81,9 @@ const OrderList = () => {
             setOrders(orders);
 
             if (res.data.data.totalPages > 1) { 
-                setTotalPage(res.data.data.totalPages);
                 setPaging({ ...paging, isNext: true }); 
             };
+            setTotalPage(res.data.data.totalPages);
         })
         .catch(err => {
             setError({ type: "Error", message: err.response.data.message });
