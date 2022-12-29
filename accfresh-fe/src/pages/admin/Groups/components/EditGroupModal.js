@@ -33,7 +33,7 @@ const EditGroupModal = (props) => {
             GetS3SignedRequest(e.target.files[0])
             .then(res => setSignedUrl(res.data.data))
             .catch(err => {
-                setError({ type: "Error", message: err });
+                setError({ type: "Error", message: err.response.data.message });
             });
         }
     }

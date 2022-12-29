@@ -9,13 +9,20 @@ const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    try {
-        const orders = await getOrders();
-        console.log(orders);
-        res.status(200).json(responseJSON('S', 'Get Orders successful.', orders));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
+    let { authorization } = req.headers;
+    const search = req.query.search;
+    const page = req.query.page;
+    const pageSize = req.query.pageSize;
+
+    userAuthVerification(authorization)
+    .then(async () => { 
+        try {
+            const orders = await getOrders(search.toUpperCase(), page, pageSize);
+            res.status(200).json(responseJSON('S', 'Get Orders successful.', orders));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 router.post('/byUser', async (req, res) => {

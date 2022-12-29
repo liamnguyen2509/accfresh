@@ -28,7 +28,7 @@ const ProductList = (props) => {
         .then(res => {
             if (res.data.type === "Success") setIsRemove(false);
         })
-        .catch(err => { setError({ type: "Error", message: err }); })
+        .catch(err => { setError({ type: "Error", message: err.response.data.message }); })
     }
 
     const onEditHandler = (productId) => {
@@ -52,7 +52,7 @@ const ProductList = (props) => {
         GetProducts()
         .then(res => setProducts(res.data.data.products))
         .catch(err => {
-            setError({ type: "Error", message: err });
+            setError({ type: "Error", message: err.response.data.message });
         });
     }, [isRemove, productEditing, props.reload]);
 

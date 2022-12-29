@@ -24,7 +24,7 @@ const GroupList = (props) => {
         .then(res => {
             if (res.data.type === "Success") setIsRemove(false);
         })
-        .catch(err => { setError({ type: "Error", message: err }); })
+        .catch(err => { setError({ type: "Error", message: err.response.data.message }); })
     }
 
     const onEditHandler = (groupId) => {
@@ -44,7 +44,7 @@ const GroupList = (props) => {
         GetGroups()
         .then(res => setGroups(res.data.data))
         .catch(err => {
-            setError({ type: "Error", message: err });
+            setError({ type: "Error", message: err.response.data.message });
         });
     }, [isRemove, props.reload, groupEditing]);
 
