@@ -38,10 +38,8 @@ const getOrdersByUser = async (userId) => {
 const submitOrder = async (order) => {
     const buyer = await User.findOne({ email: order.buyerEmail }).populate('wallet');
     // update wallet
-    if (!buyer.wallet || buyer.wallet.balance <= 0 || buyer.wallet.balance < order.totalAmount) { throw Error("Your wallet is not have enought balance."); } else { 
+    if (!buyer.wallet || buyer.wallet.balance <= 0 || parseFloat(buyer.wallet.balance) < order.totalAmount) { throw Error("Your wallet is not have enought balance."); } else { 
         const wallet = await Wallet.findById(buyer.wallet._id);
-        wallet.balance = (wallet.balance - order.totalAmount).toFixed(2);
-        await wallet.save();
     
         // create order
         //// link product list to order
@@ -59,6 +57,9 @@ const submitOrder = async (order) => {
                 await Order.findByIdAndRemove({ _id: updatedOrder._id });
                 throw Error("One of your items is not enought stock."); 
             } else {
+                wallet.balance = (wallet.balance - order.totalAmount).toFixed(2);
+                await wallet.save();
+
                 product.stock = product.stock - item.quantity;
                 product.sold = product.sold + item.quantity;
                 await product.save();
