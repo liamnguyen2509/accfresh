@@ -32,13 +32,13 @@ const authenticateAdmin = async (email, password) => {
     }
 }
 
-const getInfo = async (email) => {
-    const admin = await Admin.findOne({ email: email });
+const getInfo = async (uid) => {
+    const admin = await Admin.findById(uid);
     return admin;
 }
 
-const updateBankAccount = async (name, account) => {
-    const admin = await Admin.findOne();
+const updateBankAccount = async (uid, name, account) => {
+    const admin = await Admin.findById(uid);
     admin.bank = name;
     admin.bankAccount = account;
 
