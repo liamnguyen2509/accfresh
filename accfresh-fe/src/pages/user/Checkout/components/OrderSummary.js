@@ -22,7 +22,7 @@ const OrderSummary = () => {
                 GetBalance(localStorage.getItem("uid"))
                 .then(res => localStorage.setItem("balance", res.data.data.$numberDecimal))
                 .catch(err => {
-                    setError({ type: "Error", message: err.response.message });
+                    setError({ type: "Error", message: err.response.data.message });
                 }); 
 
                 cartCtx.clearCart();
@@ -31,7 +31,7 @@ const OrderSummary = () => {
             }
         })
         .catch(err => {
-            setError({ type: "Error", message: err });
+            setError({ type: "Error", message: err.response.data.message });
         });
     }
 

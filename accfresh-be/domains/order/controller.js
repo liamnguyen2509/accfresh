@@ -27,9 +27,8 @@ const getOrdersByUser = async (userId) => {
 
 const submitOrder = async (order) => {
     const buyer = await User.findOne({ email: order.buyerEmail }).populate('wallet');
-    
     // update wallet
-    if (!buyer.wallet || buyer.wallet.balance <= 0) { throw Error("Your wallet is not have enought balance."); } else { 
+    if (!buyer.wallet || buyer.wallet.balance <= 0 || buyer.wallet.balance < order.totalAmount) { throw Error("Your wallet is not have enought balance."); } else { 
         const wallet = await Wallet.findById(buyer.wallet._id);
         wallet.balance = (wallet.balance - order.totalAmount).toFixed(2);
         await wallet.save();
