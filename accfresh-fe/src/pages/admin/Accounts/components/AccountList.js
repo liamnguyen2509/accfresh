@@ -21,7 +21,7 @@ const AccountList = (props) => {
         .catch(err => {
             setError({ type: "Error", message: err.response.message });
         });
-    }, [props.query, props.page]);
+    }, [props]);
 
     return (
         <div className={`col-detail-inr ${classes["account-content-panel"]}`}>

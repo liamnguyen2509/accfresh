@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Layout from "../../../components/AdminLayout/Layout";
@@ -7,7 +7,7 @@ import OrderList from "./components/OrderList";
 
 import AuthContext from "../../../store/authContext";
 
-const Orders = (props) => {
+const Orders = () => {
     const context = useContext(AuthContext);
     const navigate = useNavigate();
 

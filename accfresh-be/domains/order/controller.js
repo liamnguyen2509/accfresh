@@ -6,14 +6,24 @@ const OrderDetails = require('./models/orderDetails');
 const Product = require('../product/model');
 const Account = require('../account/model');
 
-const getOrders = async () => {
+const getOrders = async (search, page, pageSize) => {
+    const skip = (page - 1) * pageSize;
+
     const orders = await Order.find({})
                               .populate("buyer").sort({ createdAt: -1 });
     
     for await (const order of orders) {
         order.orderDetails = await OrderDetails.find({ order: order._id }).populate("product");
     }
-    return orders;
+
+    const totalRows = await Order.countDocuments();
+    const result = {
+        totalPages: Math.ceil(totalRows/20),
+        orders: orders.filter(order => order.buyer.email.toUpperCase().includes(search) 
+        || order._id.toString().toUpperCase().includes(search)).slice(skip, skip + pageSize)
+    }
+
+    return result;
 }
 
 const getOrdersByUser = async (userId) => {

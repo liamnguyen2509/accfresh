@@ -62,7 +62,7 @@ const ProductList = () => {
                                 orderDetailId={order.orderDetailId}
                                 product={order.product}
                                 quantity={order.quantity}
-                                totalAmount={order.amount}
+                                totalAmount={parseFloat(order.amount).toFixed(2)}
                                 orderDate={order.orderDate}
                             />
                         ))

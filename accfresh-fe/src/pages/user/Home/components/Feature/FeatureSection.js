@@ -14,7 +14,7 @@ const FeatureSection = () => {
         GetProductsByGroup(groupId)
         .then(res => setProducts(res.data.data.filter(product => product.isActive === true)))
         .catch(err => {
-            setError({ type: "Error", message: err });
+            setError({ type: "Error", message: err.response.data.message });
         });;
     }
 
@@ -26,7 +26,7 @@ const FeatureSection = () => {
         GetGroups()
         .then(res => setGroups(res.data.data.filter(group => group.isActive === true)))
         .catch(err => {
-            setError({ type: "Error", message: err });
+            setError({ type: "Error", message: err.response.data.message });
         });
     }, []);
 
