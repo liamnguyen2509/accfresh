@@ -3,6 +3,7 @@ const { validateAdmin, authenticateAdmin, getInfo, updateBankAccount } = require
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
+const { adminAuthVerification } = require('../../util/jwt');
 
 const express = require('express');
 const router = express.Router();
@@ -24,25 +25,33 @@ router.post('/authenticate', async (req, res) => {
 
 // Info
 router.post('/', async (req, res) => {
-    let { email } = req.body;
-
-    try {
-        const fetchedAdmin = await getInfo(email);
-        res.status(200).json(responseJSON('S', 'Get admin information successful.', fetchedAdmin));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
+    const { authorization } = req.headers;
+    let { uid } = req.body;
+    
+    adminAuthVerification(authorization)
+    .then(async () => {
+        try {
+            const fetchedAdmin = await getInfo(uid);
+            res.status(200).json(responseJSON('S', 'Get admin information successful.', fetchedAdmin));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 router.post('/bank', async (req, res) => {
-    const { name, account } = req.body;
+    const { authorization } = req.headers;
+    const { uid, name, account } = req.body;
 
-    try {
-        const updatedAdmin = await updateBankAccount(name, account);
-        res.status(200).json(responseJSON('S', 'Update bank info successful.', updatedAdmin));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
+    adminAuthVerification(authorization)
+    .then(async () => {
+        try {
+            const updatedAdmin = await updateBankAccount(uid, name, account);
+            res.status(200).json(responseJSON('S', 'Update bank info successful.', updatedAdmin));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 module.exports = router;

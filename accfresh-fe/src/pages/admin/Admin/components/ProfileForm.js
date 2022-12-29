@@ -7,7 +7,7 @@ const ProfileForm = () => {
     const [message, setMessage] = useState({});
 
     useEffect(() => {
-        GetInfo(localStorage.getItem("email"))
+        GetInfo(localStorage.getItem("uid"))
         .then(res => setBank({ name: res.data.data.bank, account: res.data.data.bankAccount }))
         .catch(err => setMessage({ type: "Error", message: err.response.message }));
     }, []);
@@ -15,7 +15,7 @@ const ProfileForm = () => {
     const onSubmitHandler = (e) => {
         e.preventDefault();
 
-        UpdateBank(bank.name, bank.account)
+        UpdateBank(localStorage.getItem("uid"), bank.name, bank.account)
         .then(res => setMessage({ type: "Success", message: "Update Bank information successfully." }))
         .catch(err => setMessage({ type: "Error", message: err.response.message }));
     }
