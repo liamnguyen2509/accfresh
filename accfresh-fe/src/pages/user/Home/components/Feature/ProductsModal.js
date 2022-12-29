@@ -22,7 +22,7 @@ const ProductsModal = (props) => {
                             key={product._id}
                             id={product._id}
                             name={product.name}
-                            image={product.image}
+                            image={`${process.env.REACT_APP_IMAGE_BASE_URL}${product.image}`}
                             price={product.price.$numberDecimal}
                             stock={product.stock}
                             sold={product.sold}

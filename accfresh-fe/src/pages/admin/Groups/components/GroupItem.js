@@ -20,8 +20,8 @@ const GroupItem = (props) => {
                 </div>
             </td>
             <td>
-                <i className="ri-delete-bin-line" style={{ cursor: "pointer", color: "red", fontSize: "25px", marginRight: "10px" }} onClick={onRemoveHandler}></i>
-                <i className="ri-edit-box-line" style={{ cursor: "pointer", fontSize: "25px" }} onClick={onEditHandler}></i>
+                <i className="ri-edit-box-line" style={{ cursor: "pointer", fontSize: "25px", marginRight: "10px" }} onClick={onEditHandler}></i>
+                <i className="ri-delete-bin-line" style={{ cursor: "pointer", color: "red", fontSize: "25px" }} onClick={onRemoveHandler}></i>
             </td>
         </tr>
     );

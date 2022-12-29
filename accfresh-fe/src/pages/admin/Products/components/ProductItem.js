@@ -3,7 +3,11 @@ import React from "react";
 const ProductItem = (props) => {
 
     const onRemoveHandler = () => {
-        props.onRemove();
+        props.onConfirm(props.id);
+    }
+
+    const onEditHandler = () => {
+        props.onEdit(props.id);
     }
 
     return (
@@ -19,7 +23,10 @@ const ProductItem = (props) => {
                     <img className="img img-fluid" src={props.image} alt="accfresh" />
                 </div>
             </td>
-            <td><i className="ri-delete-bin-line" style={{ cursor: "pointer", color: "red", fontSize: "25px" }} onClick={onRemoveHandler}></i></td>
+            <td>
+                <i className="ri-edit-box-line" style={{ cursor: "pointer", fontSize: "25px", marginRight: "10px" }} onClick={onEditHandler}></i>
+                <i className="ri-delete-bin-line" style={{ cursor: "pointer", color: "red", fontSize: "25px" }} onClick={onRemoveHandler}></i>
+            </td>
         </tr>
     );
 }
