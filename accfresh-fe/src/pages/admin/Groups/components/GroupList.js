@@ -81,7 +81,7 @@ const GroupList = (props) => {
                     }
                 </tbody>
             </table>
-            { isRemove && <ConfirmModal groupId={groupRemoving.id} groupName={groupRemoving.name} onClose={onCloseModalHandler} onRemove={onRemoveHandler} /> }
+            { isRemove && <ConfirmModal groupName={groupRemoving.name} onClose={onCloseModalHandler} onRemove={onRemoveHandler} /> }
             { groupEditing && 
                 <EditGroupModal id={groupEditing.id} name={groupEditing.name} image={`${process.env.REACT_APP_IMAGE_BASE_URL}${groupEditing.image}`} onClose={onCloseEditModalHandler} /> }
         </div>

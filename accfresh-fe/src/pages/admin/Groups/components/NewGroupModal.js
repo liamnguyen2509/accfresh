@@ -59,10 +59,10 @@ const NewGroupModal = (props) => {
     }
 
     return (
-        <div className={`${classes["new-modal"]} ${classes["new-modal-open"]}`}>
+        <div className={`${classes["form-modal"]} ${classes["form-modal-open"]}`}>
             <div className={classes.content}>
                 <div className={classes.header}>
-                    <h4 className="heading-h4">Add New Group</h4>
+                    <h4 className="heading-h4">New Group</h4>
                     <i className="ri-close-line heading-h4" style={{ cursor: "pointer" }} onClick={onCloseModalHandler}></i>
                 </div>
                 <form className={classes["form-main"]} method="post" onSubmit={onSubmitHandler}>

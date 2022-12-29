@@ -58,7 +58,7 @@ const updateGroup = async (requestGroup) => {
         }
     
         const updatedGroup = await groupUpdate.save().catch((err) => {
-            throw Error("Create Group failed.");
+            throw Error("Update Group failed.");
         });
     
         return updatedGroup;

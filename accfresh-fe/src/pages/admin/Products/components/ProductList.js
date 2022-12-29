@@ -1,12 +1,52 @@
 import React, { useEffect, useState } from "react";
 
 import ProductItem from "./ProductItem";
+import ConfirmModal from "./ConfirmModal";
+import FormEditModal from "./FormEditModal";
 
-import { GetProducts } from "../api";
+import { GetProducts, RemoveProduct } from "../api";
 
-const ProductList = () => {
+const ProductList = (props) => {
     const [products, setProducts] = useState([]);
+    const [isRemove, setIsRemove] = useState(false);
+    const [productRemoving, setProductRemoving] = useState();
+    const [productEditing, setProductEditing] = useState();
     const [error, setError] = useState({});
+
+    const onConfirmRemoveHandler = (productId) => {
+        setIsRemove(true);
+        const productRemoving = products.find(product => product._id === productId);
+        setProductRemoving({ id: productId, name: productRemoving.name });
+    }
+
+    const onCloseModalHandler = () => {
+        setIsRemove(false);
+    }
+
+    const onRemoveHandler = () => {
+        RemoveProduct(productRemoving.id)
+        .then(res => {
+            if (res.data.type === "Success") setIsRemove(false);
+        })
+        .catch(err => { setError({ type: "Error", message: err }); })
+    }
+
+    const onEditHandler = (productId) => {
+        const productEditing = products.find(product => product._id === productId);
+        setProductEditing({ 
+            id: productId, 
+            name: productEditing.name, 
+            image: productEditing.image, 
+            description: productEditing.description,
+            stock: productEditing.stock,
+            sold: productEditing.sold,
+            price: productEditing.price.$numberDecimal
+        });
+    }
+
+    const onCloseEditModalHandler = () => {
+        setProductEditing(null);
+    }
 
     useEffect(() => {
         GetProducts()
@@ -14,7 +54,7 @@ const ProductList = () => {
         .catch(err => {
             setError({ type: "Error", message: err });
         });
-    }, []);
+    }, [isRemove, productEditing, props.reload]);
 
     const tableCartStyle = {
         backgroundColor: "rgba(210,130,240, 0.3) !important",
@@ -22,7 +62,7 @@ const ProductList = () => {
     }
 
     return (
-        <div className="col-detail-inr">
+        <div className="col-detail-inr" style={{ marginTop: "15px" }}>
             <table className="table" style={tableCartStyle}>
                 <thead>
                     <tr>
@@ -42,18 +82,32 @@ const ProductList = () => {
                         products.map((product, index) => (
                             <ProductItem 
                                 key={product._id}
+                                id={product._id}
                                 order={index + 1}
                                 name={product.name}
                                 description={product.description.length > 50 ? `${product.description.substring(0, 50)}...` : product.description}
                                 stock={product.stock}
                                 sold={product.sold}
                                 price={product.price.$numberDecimal}
-                                image={product.image}
+                                image={`${process.env.REACT_APP_IMAGE_BASE_URL}${product.image}`}
+                                onConfirm={onConfirmRemoveHandler}
+                                onEdit={onEditHandler}
                             />
                         ))
                     }
                 </tbody>
             </table>
+            { isRemove && <ConfirmModal name={productRemoving.name} onClose={onCloseModalHandler} onRemove={onRemoveHandler} /> }
+            { productEditing && 
+                <FormEditModal 
+                    id={productEditing.id} 
+                    name={productEditing.name} 
+                    image={`${process.env.REACT_APP_IMAGE_BASE_URL}${productEditing.image}`} 
+                    description={productEditing.description}
+                    stock={productEditing.stock}
+                    sold={productEditing.sold}
+                    price={productEditing.price}
+                    onClose={onCloseEditModalHandler} /> }
         </div>
     );
 }
