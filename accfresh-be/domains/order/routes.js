@@ -3,7 +3,7 @@ const { getOrders, submitOrder, getOrdersByUser } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
-const { userAuthVerification } = require('../../util/jwt');
+const { userAuthVerification, adminAuthVerification } = require('../../util/jwt');
 
 const express = require('express');
 const router = express.Router();
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     const page = req.query.page;
     const pageSize = req.query.pageSize;
 
-    userAuthVerification(authorization)
+    adminAuthVerification(authorization)
     .then(async () => { 
         try {
             const orders = await getOrders(search.toUpperCase(), page, pageSize);

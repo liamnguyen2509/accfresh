@@ -53,6 +53,7 @@ const submitOrder = async (order) => {
             // order details
             const product = await Product.findById(item.id);
             const accountWillBeSold = await Account.find({ product: product._id, isActive: true, isSold: false }).limit(item.quantity);
+
             if (accountWillBeSold.length <= 0 || accountWillBeSold.length < item.quantity) { 
                 await Order.findByIdAndRemove({ _id: updatedOrder._id });
                 throw Error("One of your items is not enought stock."); 

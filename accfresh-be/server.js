@@ -19,7 +19,7 @@ app.use(cors(
     }
 ));
 // Accepting post form data
-app.use(bodyParser());
+app.use(bodyParser({ limit: '250mb' }));
 // registering routes
 app.use('/api', routes);
 
