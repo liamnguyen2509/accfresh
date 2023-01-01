@@ -70,4 +70,18 @@ const GetBalance = async (userId) => {
     return user.wallet.balance;
 }
 
-module.exports = { validateUser, authenticateUser, registerUser, GetBalance }
+const getUsers = async (search, page, pageSize) => {
+    const skip = (page - 1) * pageSize;
+    const users = await User.find({ $or: [{ username: { $regex: search } }, { email: { $regex: search } }]})
+                            .sort({ createdAt: -1 }).populate("wallet").skip(skip).limit(pageSize);
+    
+    const totalRows = await User.countDocuments();
+    const result = {
+        totalPages: Math.ceil(totalRows/pageSize),
+        users: users
+    }
+
+    return result;
+}
+
+module.exports = { validateUser, authenticateUser, registerUser, GetBalance, getUsers }
