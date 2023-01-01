@@ -4,9 +4,17 @@ const OrderDetails = require('../order/models/orderDetails');
 const Account = require('./model');
 const Product = require('../product/model');
 
-const getAccounts = async (query, page) => {
-    const accounts = await Account.find({ content: { $regex: query, $options: "i" } }).sort({ createdAt: -1 }).populate("product").skip(page * 20).limit(20);
-    return accounts;
+const getAccounts = async (search, page, pageSize) => {
+    const skip = (page - 1) * pageSize;
+    const accounts = await Account.find({ content: { $regex: search } }).sort({ createdAt: -1 }).populate("product").skip(skip).limit(pageSize);
+    
+    const totalRows = await Account.countDocuments();
+    const result = {
+        totalPages: Math.ceil(totalRows/20),
+        accounts: accounts
+    }
+
+    return result;
 }
 
 const getAccountsByUser = async (userId) => {
@@ -57,4 +65,10 @@ const createAccounts = async (accounts) => {
     return totalInserted;
 }
 
-module.exports = { getAccounts, createAccounts, getAccountsByUser, getAccountsByOrderDetail }
+const deleteAccount = async (accountId) => {
+    await Account.deleteOne({ _id: accountId }).catch((err) => {
+        throw Error("Delete Account failed.");
+    });;
+}
+
+module.exports = { getAccounts, createAccounts, getAccountsByUser, getAccountsByOrderDetail, deleteAccount }

@@ -3,7 +3,7 @@ import React from "react";
 const AccountItem = (props) => {
 
     const onRemoveHandler = () => {
-        
+        props.onConfirm(props.id);
     }
 
     return (
