@@ -59,7 +59,7 @@ const OrderSummary = () => {
                     </li>
                 </ul>
                 {cartCtx.items.length > 0 && <button className="btn-primary-1 heading-SB" style={{ textAlign: "center", width: "100%" }} onClick={onPurchaseHandler}> Make Purchase </button>}
-                <p className="text heading-S" style={{ color: "orange", padding: "20px 0 0 0" }}>{error && error.message}</p>
+                <p className="text heading-S" style={{ color: "orange", padding: "20px 0 0 0", textAlign: "center" }}>{error && error.message}</p>
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 // domain functions
-const { getOrders, submitOrder, getOrdersByUser } = require('./controller');
+const { getOrders, submitOrder, getOrdersByUser, fixOrderData } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
@@ -24,6 +24,16 @@ router.get('/', async (req, res) => {
         }
     });
 });
+
+router.get('/fixOrderData', async (req, res) => {
+    try {
+        const result = await fixOrderData();
+        res.status(200).json(responseJSON('S', result));
+    } catch (e) {
+        res.status(400).json(responseJSON('SWR', e.message));
+    }
+});
+
 
 router.post('/byUser', async (req, res) => {
     let { authorization } = req.headers;

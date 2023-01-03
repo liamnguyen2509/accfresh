@@ -10,7 +10,7 @@ const getAccounts = async (search, page, pageSize) => {
     
     const totalRows = await Account.countDocuments();
     const result = {
-        totalPages: Math.ceil(totalRows/20),
+        totalPages: Math.ceil(totalRows/pageSize),
         accounts: accounts
     }
 
