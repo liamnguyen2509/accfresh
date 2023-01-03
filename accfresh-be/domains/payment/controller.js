@@ -137,7 +137,13 @@ const getLastedPayment = async () => {
 }
 
 const getPaymentById = async (userId, paymentId) => {
-    const payment = await Payment.findOne({ user: userId, paymentId: paymentId });
+    let payment;
+    if (userId === null) {
+        payment = await Payment.findOne({ paymentId: paymentId });
+    } else {
+        payment = await Payment.findOne({ user: userId, paymentId: paymentId });
+    }
+
     if (payment.isDeposit) {
         return payment;
     } else {
