@@ -64,21 +64,7 @@ const OrderList = () => {
     useEffect(() => {
         GetOrders(searchTerm, paging.page, paging.pageSize)
         .then(async res => {
-            const orders = [];
-            for await (const order of res.data.data.orders) {
-                for await (const orderDetail of order.orderDetails) {
-                    orders.push({
-                        id: order._id,
-                        buyer: order.buyer.email,
-                        orderDetailId: orderDetail._id,
-                        product: orderDetail.product.name,
-                        quantity: orderDetail.quantity,
-                        amount: orderDetail.amount.$numberDecimal,
-                        orderDate: Moment(order.createdAt).format('D-MMM-yyyy h:mm A')
-                    });
-                }
-            }
-            setOrders(orders);
+            setOrders(res.data.data.orders);
 
             if (res.data.data.totalPages > 1) { 
                 setPaging({ ...paging, isNext: true }); 
@@ -140,8 +126,8 @@ const OrderList = () => {
                                     orderDetailId={order.orderDetailId}
                                     product={order.product}
                                     quantity={order.quantity}
-                                    totalAmount={parseFloat(order.amount).toFixed(2)}
-                                    orderDate={order.orderDate}
+                                    totalAmount={parseFloat(order.amount.$numberDecimal).toFixed(2)}
+                                    orderDate={Moment(order.orderDate).format('D-MMM-yyyy h:mm A')}
                                 />
                             ))
                         }

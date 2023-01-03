@@ -9,18 +9,27 @@ const Account = require('../account/model');
 const getOrders = async (search, page, pageSize) => {
     const skip = (page - 1) * pageSize;
 
-    const orders = await Order.find({})
-                              .populate("buyer").sort({ createdAt: -1 });
-    
-    for await (const order of orders) {
-        order.orderDetails = await OrderDetails.find({ order: order._id }).populate("product");
-    }
+    const orders = await OrderDetails.find()
+                                     .populate({ path: 'order', select: '_id buyer', populate: { path: 'buyer', select: 'email' } })
+                                     .populate({ path: 'product', select: 'name' }).sort({ createdAt: -1 });
 
-    const totalRows = await Order.countDocuments();
+    const filteredOrders = orders.filter(orderDetails => orderDetails.order.buyer.email.toUpperCase().includes(search) 
+    || orderDetails.order._id.toString().toUpperCase().includes(search)).slice(skip, skip + parseInt(pageSize));
+    
+    const totalRows = orders.length;
     const result = {
-        totalPages: Math.ceil(totalRows/20),
-        orders: orders.filter(order => order.buyer.email.toUpperCase().includes(search) 
-        || order._id.toString().toUpperCase().includes(search)).slice(skip, skip + pageSize)
+        totalPages: Math.ceil(totalRows/pageSize),
+        orders: filteredOrders.map(orderDetails => {
+            return {
+                id: orderDetails.order._id,
+                buyer: orderDetails.order.buyer.email,
+                orderDetailId: orderDetails._id,
+                product: orderDetails.product.name,
+                quantity: orderDetails.quantity,
+                amount: orderDetails.amount,
+                orderDate: orderDetails.createdAt
+            }
+        })
     }
 
     return result;
@@ -65,13 +74,14 @@ const submitOrder = async (order) => {
                 product.sold = product.sold + item.quantity;
                 await product.save();
         
-                const createdOrderDetail = new OrderDetails ({
+                const newOrderDetails = new OrderDetails ({
                     quantity: item.quantity,
-                    amount: item.quantity * item.price,
-                    order: updatedOrder,
-                    product: product
+                    amount: (item.quantity * item.price).toFixed(2),
+                    order: updatedOrder._id,
+                    product: product._id
                 });
-                await createdOrderDetail.save();
+                const createdOrderDetail = await newOrderDetails.save();
+                await Order.findByIdAndUpdate(updatedOrder._id, { $addToSet: { orderDetails: createdOrderDetail._id } });
         
                 // assing accounts
                 for await (const account of accountWillBeSold) {
@@ -84,8 +94,17 @@ const submitOrder = async (order) => {
 
         return newOrder;
     };
-
-    
 }
 
-module.exports = { getOrders, getOrdersByUser, submitOrder }
+const fixOrderData = async () => {
+    const orders = await Order.find();
+    for await (const order of orders) {
+        const orderDetails = await OrderDetails.find({ order: order._id });
+        for await (const detail of orderDetails) {
+            await Order.findByIdAndUpdate(order._id, { $addToSet: { orderDetails: detail._id } });
+        }
+    }
+    return "Fixed completed";
+}
+
+module.exports = { getOrders, getOrdersByUser, submitOrder, fixOrderData }
