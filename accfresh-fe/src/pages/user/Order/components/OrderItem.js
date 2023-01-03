@@ -36,8 +36,8 @@ const OrderItem = (props) => {
             <td>{props.totalAmount}$</td>
             <td>{props.orderDate}</td>
             <td>
-                <button className={`btn-primary-1 heading-SB`} style={{ marginRight: "5px" }} onClick={onSeeMoreHandler}> See More </button>
-                <button className={`btn-primary-1 heading-SB`} onClick={onDownloadHandler}> Download </button>
+                <button className={`btn-primary-1 heading-SB`} style={{ marginRight: "5px", padding: "5px 10px 5px 10px" }} onClick={onSeeMoreHandler}> See More </button>
+                <button className={`btn-primary-1 heading-SB`} style={{ padding: "5px 10px 5px 10px" }} onClick={onDownloadHandler}> Download </button>
             </td>
         </tr>
     );

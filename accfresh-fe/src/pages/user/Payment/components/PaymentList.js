@@ -33,7 +33,7 @@ const PaymentList = () => {
                         <th>AMOUNT</th>
                         <th>STATUS</th>
                         <th>PAID DATE</th>
-                        {/* <th style={{ maxWidth: "20%" }}></th> */}
+                        <th style={{ width: "15%" }}></th>
                     </tr>
                 </thead>
                 <tbody>

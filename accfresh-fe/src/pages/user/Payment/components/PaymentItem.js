@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+import { GetPaymentStatus } from "../api";
 
 const PaymentItem = (props) => {
+    const [status, setStatus] = useState(props.status);
+    const [error, setError] = useState({});
 
-    const buttonStyle = {
-        padding: "2px 5px 2px 5px",
-        borderRadius: "5px",
-        marginLeft: "10px"
+    const onClickRecheckHandler = () => {
+        GetPaymentStatus(props.id)
+        .then(res => setStatus(res.data.data.status))
+        .catch(err => {
+            setError({ type: "Error", message: err.response.message });
+        });
     }
+
+    useEffect(() => {
+
+    }, [props.status]);
 
     return (
         <tr style={{ verticalAlign: "middle" }}>
@@ -14,16 +24,17 @@ const PaymentItem = (props) => {
             <td>{props.id}</td>
             <td>{props.type === 5 ? "Perfect Money Evoucher" : "Perfect Money"}</td>
             <td>{props.amount} {props.unit}</td>
-            <td>{!props.status ? "" : props.status === "pending"
-                    ? <span style={{ color: "orange", fontWeight: "bold" }}>{props.status.toUpperCase()}</span> 
-                    : props.status === "delete" 
-                    ? <span style={{ color: "red", fontWeight: "bold" }}>{props.status.toUpperCase()}</span>
-                    : <span style={{ color: "green", fontWeight: "bold" }}>{props.status.toUpperCase()}</span>
+            <td>{!status ? "" : status === "pending"
+                    ? <span style={{ color: "orange", fontWeight: "bold" }}>{status.toUpperCase()}</span> 
+                    : status === "delete" 
+                    ? <span style={{ color: "red", fontWeight: "bold" }}>{status.toUpperCase()}</span>
+                    : <span style={{ color: "green", fontWeight: "bold" }}>{status.toUpperCase()}</span>
                 }</td>
             <td>{props.payDate}</td>
-            {/* <td>
-                {props.status === "pending" && <button className="btn-primary-1" style={buttonStyle}> Make Payment </button>}
-            </td> */}
+            <td>
+                {props.status !== 'done' && props.status !== 'delete' &&
+                <button className={`btn-primary-1 heading-SB`} style={{ marginRight: "5px", padding: "5px 10px 5px 10px" }} onClick={onClickRecheckHandler}> Re-Check Status </button>}
+            </td>
         </tr>
     );
 }
