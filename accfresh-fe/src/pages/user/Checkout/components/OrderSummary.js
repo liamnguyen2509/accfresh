@@ -18,7 +18,7 @@ const OrderSummary = () => {
             items: cartCtx.items
         })
         .then(res => { 
-            if (res.data.data) {
+            if (res.data.type === 'Success') {
                 GetBalance(localStorage.getItem("uid"))
                 .then(res => localStorage.setItem("balance", res.data.data.$numberDecimal))
                 .catch(err => {

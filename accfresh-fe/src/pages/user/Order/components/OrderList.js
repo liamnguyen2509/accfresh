@@ -11,22 +11,7 @@ const ProductList = () => {
 
     useEffect(() => {
         GetOrders(localStorage.getItem("uid"))
-        .then(async res => {
-            const orders = [];
-            for await (const order of res.data.data) {
-                for await (const orderDetail of order.orderDetails) {
-                    orders.push({
-                        id: order._id,
-                        orderDetailId: orderDetail._id,
-                        product: orderDetail.product.name,
-                        quantity: orderDetail.quantity,
-                        amount: orderDetail.amount.$numberDecimal,
-                        orderDate: Moment(order.createdAt).format('D-MMM-yyyy h:mm A')
-                    });
-                }
-            }
-            setOrders(orders);
-        })
+        .then(async res => setOrders(res.data.data))
         .catch(err => {
             setError({ type: "Error", message: err.response.message });
         });
@@ -62,8 +47,8 @@ const ProductList = () => {
                                 orderDetailId={order.orderDetailId}
                                 product={order.product}
                                 quantity={order.quantity}
-                                totalAmount={parseFloat(order.amount).toFixed(2)}
-                                orderDate={order.orderDate}
+                                totalAmount={parseFloat(order.amount.$numberDecimal).toFixed(2)}
+                                orderDate={Moment(order.orderDate).format('D-MMM-yyyy h:mm A')}
                             />
                         ))
                     }
