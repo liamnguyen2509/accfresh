@@ -14,6 +14,7 @@ const AccountList = (props) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [totalPages, setTotalPage] = useState(1);
     const currentPage = useRef(1);
+    const orderingStartRow = useRef(0);
     const [paging, setPaging] = useState({
         page: 1,
         pageSize: 20,
@@ -97,6 +98,7 @@ const AccountList = (props) => {
                 setPaging({ ...paging, isNext: true }); 
             };
             setTotalPage(res.data.data.totalPages);
+            orderingStartRow.current = currentPage.current === 1 ? 0 : (currentPage.current - 1) * paging.pageSize;
         })
         .catch(err => {
             setError({ type: "Error", message: err.response.message });
@@ -139,19 +141,22 @@ const AccountList = (props) => {
                     <tbody>
                         {
                             accounts.length > 0 &&
-                            accounts.map((account, index) => (
-                                <AccountItem 
-                                    key={account._id}
-                                    id={account._id}
-                                    order={index + 1}
-                                    product={account.product.name}
-                                    content={account.content}
-                                    isSold={account.isSold}
-                                    buyer={""}
-                                    isActive={account.isActive}
-                                    onConfirm={onConfirmRemoveHandler}
-                                />
-                            ))
+                            accounts.map((account, index) => {
+                                orderingStartRow.current = orderingStartRow.current + 1;
+                                return (
+                                    <AccountItem 
+                                        key={account._id}
+                                        id={account._id}
+                                        order={orderingStartRow.current}
+                                        product={account.product.name}
+                                        content={account.content}
+                                        isSold={account.isSold}
+                                        buyer={""}
+                                        isActive={account.isActive}
+                                        onConfirm={onConfirmRemoveHandler}
+                                    />
+                                )
+                            })
                         }
                     </tbody>
                 </table>
