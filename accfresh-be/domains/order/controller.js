@@ -155,7 +155,7 @@ const submitOrder = async (order) => {
 }
 
 const fixOrderData = async () => {
-    const orderDetails = await OrderDetails.find();
+    const orderDetails = await OrderDetails.find().sort({ createdAt: -1 }).limit(20);
     for await (const orderDetail of orderDetails) {
         const order = await Order.findById(orderDetail.order).populate('buyer');
         await OrderDetails.findByIdAndUpdate(
