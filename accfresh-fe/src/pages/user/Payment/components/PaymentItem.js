@@ -17,6 +17,8 @@ const PaymentItem = (props) => {
             .catch(err => {
                 setError({ type: "Error", message: err.response.message });
             }); 
+
+            window.location.reload();
         })
         .catch(err => {
             setError({ type: "Error", message: err.response.message });
