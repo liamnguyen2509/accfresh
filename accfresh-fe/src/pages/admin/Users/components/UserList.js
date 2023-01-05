@@ -10,6 +10,7 @@ const UserList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [totalPages, setTotalPage] = useState(1);
     const currentPage = useRef(1);
+    const orderingStartRow = useRef(0);
     const [paging, setPaging] = useState({
         page: 1,
         pageSize: 20,
@@ -67,6 +68,7 @@ const UserList = () => {
                 setPaging({ ...paging, isNext: true }); 
             };
             setTotalPage(res.data.data.totalPages);
+            orderingStartRow.current = currentPage.current === 1 ? 0 : (currentPage.current - 1) * paging.pageSize;
         })
         .catch(err => {
             setError({ type: "Error", message: err.response.data.message });
@@ -112,16 +114,19 @@ const UserList = () => {
                     <tbody>
                         {
                             users.length > 0 &&
-                            users.map((user, index) => (
-                                <UserItem 
-                                    key={user._id}
-                                    order={index + 1}
-                                    username={user.username}
-                                    email={user.email}
-                                    balance={user.wallet.balance.$numberDecimal}
-                                    createdDate={Moment(user.createdAt).format('D-MMM-yyyy h:mm A')}
-                                />
-                            ))
+                            users.map((user, index) => {
+                                orderingStartRow.current = orderingStartRow.current + 1;
+                                return (
+                                    <UserItem 
+                                        key={user._id}
+                                        order={orderingStartRow.current}
+                                        username={user.username}
+                                        email={user.email}
+                                        balance={user.wallet.balance.$numberDecimal}
+                                        createdDate={Moment(user.createdAt).format('D-MMM-yyyy h:mm A')}
+                                    />
+                                )
+                            })
                         }
                     </tbody>
                 </table>

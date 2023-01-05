@@ -18,7 +18,7 @@ const getOrders = async (search, page, pageSize) => {
                                      .skip(skip)
                                      .limit(pageSize);
 
-    const totalRows = orders.length;
+    const totalRows = await OrderDetails.countDocuments();
     const result = {
         totalPages: Math.ceil(totalRows/pageSize),
         orders: orders.map(orderDetails => {

@@ -10,6 +10,7 @@ const OrderList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [totalPages, setTotalPage] = useState(1);
     const currentPage = useRef(1);
+    const orderingStartRow = useRef(0);
     const [paging, setPaging] = useState({
         page: 1,
         pageSize: 20,
@@ -70,6 +71,7 @@ const OrderList = () => {
                 setPaging({ ...paging, isNext: true }); 
             };
             setTotalPage(res.data.data.totalPages);
+            orderingStartRow.current = currentPage.current === 1 ? 0 : (currentPage.current - 1) * paging.pageSize;
         })
         .catch(err => {
             setError({ type: "Error", message: err.response.data.message });
@@ -117,19 +119,22 @@ const OrderList = () => {
                     <tbody>
                         {
                             orders.length > 0 &&
-                            orders.map((order, index) => (
-                                <OrderItem 
-                                    key={index}
-                                    id={order.id}
-                                    order={index + 1}
-                                    buyer={order.buyer}
-                                    orderDetailId={order.orderDetailId}
-                                    product={order.product}
-                                    quantity={order.quantity}
-                                    totalAmount={parseFloat(order.amount.$numberDecimal).toFixed(2)}
-                                    orderDate={Moment(order.orderDate).format('D-MMM-yyyy h:mm A')}
-                                />
-                            ))
+                            orders.map((order, index) => {
+                                orderingStartRow.current = orderingStartRow.current + 1;
+                                return (
+                                    <OrderItem 
+                                        key={index}
+                                        id={order.id}
+                                        order={orderingStartRow.current}
+                                        buyer={order.buyer}
+                                        orderDetailId={order.orderDetailId}
+                                        product={order.product}
+                                        quantity={order.quantity}
+                                        totalAmount={parseFloat(order.amount.$numberDecimal).toFixed(2)}
+                                        orderDate={Moment(order.orderDate).format('D-MMM-yyyy h:mm A')}
+                                    />
+                                )
+                            })
                         }
                     </tbody>
                 </table>
