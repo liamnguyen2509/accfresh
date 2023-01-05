@@ -9,20 +9,22 @@ const Account = require('../account/model');
 const getOrders = async (search, page, pageSize) => {
     const skip = (page - 1) * pageSize;
 
-    const orders = await OrderDetails.find()
-                                     .populate({ path: 'order', select: '_id buyer', populate: { path: 'buyer', select: 'email' } })
-                                     .populate({ path: 'product', select: 'name' }).sort({ createdAt: -1 });
+    const orders = await OrderDetails.find({ $or: [
+                                                    { 'order.buyer': { $regex: search } },
+                                                    { 'order._id': { $regex: search } }
+                                                ]})                                
+                                     .populate({ path: 'product', select: 'name' })
+                                     .sort({ createdAt: -1 })
+                                     .skip(skip)
+                                     .limit(pageSize);
 
-    const filteredOrders = orders.filter(orderDetails => orderDetails.order.buyer.email.toUpperCase().includes(search) 
-    || orderDetails.order._id.toString().toUpperCase().includes(search)).slice(skip, skip + parseInt(pageSize));
-    
     const totalRows = orders.length;
     const result = {
         totalPages: Math.ceil(totalRows/pageSize),
-        orders: filteredOrders.map(orderDetails => {
+        orders: orders.map(orderDetails => {
             return {
                 id: orderDetails.order._id,
-                buyer: orderDetails.order.buyer.email,
+                buyer: orderDetails.order.buyer,
                 orderDetailId: orderDetails._id,
                 product: orderDetails.product.name,
                 quantity: orderDetails.quantity,
@@ -36,72 +38,144 @@ const getOrders = async (search, page, pageSize) => {
 }
 
 const getOrdersByUser = async (userId) => {
-    const orders = await Order.find({ buyer: userId }).sort({ createdAt: -1 });
+    const buyer = await User.findById(userId);
+    const orders = await OrderDetails.find({ 'order.buyer': buyer.email })                                
+                                    .populate({ path: 'product', select: 'name' })
+                                    .sort({ createdAt: -1 });
     
-    for await (const order of orders) {
-        order.orderDetails = await OrderDetails.find({ order: order._id }).populate("product");
-    }
-    return orders;
+    return orders.map(orderDetails => {
+        return {
+            id: orderDetails.order._id,
+            buyer: orderDetails.order.buyer,
+            orderDetailId: orderDetails._id,
+            product: orderDetails.product.name,
+            quantity: orderDetails.quantity,
+            amount: orderDetails.amount,
+            orderDate: orderDetails.createdAt
+        }
+    });
 }
 
 const submitOrder = async (order) => {
     const buyer = await User.findOne({ email: order.buyerEmail }).populate('wallet');
-    // update wallet
-    if (!buyer.wallet || buyer.wallet.balance <= 0 || parseFloat(buyer.wallet.balance) < order.totalAmount) { throw Error("Your wallet is not have enought balance."); } else { 
-        const wallet = await Wallet.findById(buyer.wallet._id);
+    console.log(`---Buyer: ${buyer.email}. Has balance: ${buyer.wallet.balance}`);
     
-        // create order
-        //// link product list to order
-        const newOrder = new Order({
-            totalAmount: order.totalAmount,
-            buyer: buyer
-        });
-        const updatedOrder = await newOrder.save();
-    
-        for await (const item of order.items) {
-            // order details
-            const product = await Product.findById(item.id);
-            const accountWillBeSold = await Account.find({ product: product._id, isActive: true, isSold: false }).limit(item.quantity);
-
-            if (accountWillBeSold.length <= 0 || accountWillBeSold.length < item.quantity) { 
-                await Order.findByIdAndRemove({ _id: updatedOrder._id });
-                throw Error("One of your items is not enought stock."); 
+    // check wallet balance
+    console.log(`---Buyer has wallet is: ${buyer.wallet}`);
+    console.log(`---Buyer has wallet less then 0: ${buyer.wallet.balance <= 0}`);
+    console.log(`---Buyer has wallet not enough order: ${parseFloat(buyer.wallet.balance) < order.totalAmount}. with order amount is: ${order.totalAmount}`)
+    if (!buyer.wallet || buyer.wallet.balance <= 0 || parseFloat(buyer.wallet.balance) < order.totalAmount) { 
+        throw Error("Your wallet is out of balance."); 
+    } else { 
+        let inStock = true;
+        for await (const itemInCart of order.items) {
+            const product = await Product.findById(itemInCart.id);
+            if (product.stock <= 0 || product.stock < itemInCart.quantity) {
+                inStock = false;
+                throw Error("One of your items is out of stock."); 
             } else {
-                wallet.balance = (wallet.balance - order.totalAmount).toFixed(2);
-                await wallet.save();
-
-                product.stock = product.stock - item.quantity;
-                product.sold = product.sold + item.quantity;
-                await product.save();
-        
-                const newOrderDetails = new OrderDetails ({
-                    quantity: item.quantity,
-                    amount: (item.quantity * item.price).toFixed(2),
-                    order: updatedOrder._id,
-                    product: product._id
-                });
-                const createdOrderDetail = await newOrderDetails.save();
-                await Order.findByIdAndUpdate(updatedOrder._id, { $addToSet: { orderDetails: createdOrderDetail._id } });
-        
-                // assing accounts
-                for await (const account of accountWillBeSold) {
-                    account.isSold = true;
-                    account.orderDetail= createdOrderDetail._id;
-                    await account.save();
+                const accountWillBeSold = await Account.find({ product: product._id, isActive: true, isSold: false }).limit(itemInCart.quantity);
+                console.log(`---Total Account can be sell is: ${accountWillBeSold.length}`);
+                // check product quantity
+                console.log(`---Product ordering has quantity less than 0: ${product.quantity <= 0}`);
+                console.log(`---Total account can sell less than 0: ${accountWillBeSold.length <= 0}`);
+                console.log(`---Total account can sell has quantity less than quantity of order: ${accountWillBeSold.length < itemInCart.quantity}. Order need ${itemInCart.quantity}`);
+                if (accountWillBeSold.length <= 0 || accountWillBeSold.length < itemInCart.quantity) {
+                    inStock = false;
+                    throw Error("One of your items is out of stock."); 
                 }
             }
         }
 
-        return newOrder;
+        if (inStock) {
+            const wallet = await Wallet.findById(buyer.wallet._id);
+            console.log(`---Wallet of buyer has balance: ${wallet.balance}`);
+            wallet.balance = (wallet.balance - order.totalAmount).toFixed(2);
+            console.log(`---Wallet of buyer has balance after update: ${wallet.balance}`);
+            await wallet.save();
+
+            return await Order.create({
+                buyer,
+                totalAmount: order.totalAmount
+            }).then(createdOrder => {
+                order.items.map(async item => {
+                    const product = await Product.findById(item.id);
+                    await OrderDetails.create({
+                        quantity: item.quantity,
+                        amount: (item.quantity * item.price).toFixed(2),
+                        order: {
+                            _id: createdOrder._id,
+                            buyer: buyer.email
+                        },
+                        product: product._id
+                    }).then(async createdOrderDetails => {
+                        // add orderdetails to order
+                        await Order.findByIdAndUpdate(
+                            createdOrder._id, 
+                            { $addToSet: { orderDetails: createdOrderDetails._id }},
+                            { new: true, useFindAndModify: false }
+                        );
+
+                        // get accounts
+                        const accountCutOff = await Account.find({ product: product._id, isActive: true, isSold: false }).limit(createdOrderDetails.quantity);
+                        console.log(`Total account cut off is: ${accountCutOff.length}`);
+                        for await (const account of accountCutOff) {
+                            await Account.findByIdAndUpdate(
+                                account._id,
+                                {
+                                    isSold: true,
+                                    orderDetail: createdOrderDetails._id
+                                },
+                                { new: true, useFindAndModify: false }
+                            );
+
+                            await OrderDetails.findByIdAndUpdate(
+                                createdOrderDetails._id,
+                                { $addToSet: { accounts: account.content }},
+                                { new: true, useFindAndModify: false }
+                            );
+                        }
+
+                        // update product stock and sold
+                        console.log(`---Quantity Need for order: ${item.quantity}`);
+                        console.log(`---Product stock before order: ${product.stock}`);
+                        console.log(`---Product sold before order: ${product.sold}`);
+
+                        product.stock = product.stock - accountCutOff.length;
+                        product.sold = product.sold + accountCutOff.length;
+                        await product.save();
+
+                        console.log(`---Product stock after order: ${product.stock}`);
+                        console.log(`---Product sold after order: ${product.sold}`);
+                    });
+                });
+            });
+        }
     };
 }
 
 const fixOrderData = async () => {
-    const orders = await Order.find();
-    for await (const order of orders) {
-        const orderDetails = await OrderDetails.find({ order: order._id });
-        for await (const detail of orderDetails) {
-            await Order.findByIdAndUpdate(order._id, { $addToSet: { orderDetails: detail._id } });
+    const orderDetails = await OrderDetails.find();
+    for await (const orderDetail of orderDetails) {
+        const order = await Order.findById(orderDetail.order).populate('buyer');
+        await OrderDetails.findByIdAndUpdate(
+            orderDetail._id, 
+            {
+                order: {
+                    _id: order._id,
+                    buyer: order.buyer.email
+                }
+            },
+            { new: true, useFindAndModify: false });
+        
+        const accountsByOrder = await Account.find({ orderDetail: orderDetail._id });
+        for await (const account of accountsByOrder) {
+            await OrderDetails.findByIdAndUpdate(
+                orderDetail._id, 
+                { 
+                    $addToSet: { accounts: account.content } 
+                },
+                { new: true, useFindAndModify: false });
         }
     }
     return "Fixed completed";

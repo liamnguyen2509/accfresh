@@ -30,7 +30,7 @@ const OrderItem = (props) => {
     return (
         <tr style={{ verticalAlign: "middle" }}>
             <td>{props.order}</td>
-            <td>{props.id.slice(-6).toUpperCase()}</td>
+            <td>{props.id.toUpperCase()}</td>
             <td>{props.product}</td>
             <td>{props.quantity}</td>
             <td>{props.totalAmount}$</td>

@@ -6,8 +6,8 @@ const OrderDetailsSchema = new Schema({
     quantity: Number,
     amount: Decimal128, 
     product: {type: mongoose.Types.ObjectId, ref: "products"},
-    order: {type: mongoose.Types.ObjectId, ref: "orders"},
-    accounts: [{type: mongoose.Types.ObjectId, ref: "accounts"}]
+    order: Object,
+    accounts: []
 }, { timestamps: true });
 
 const OrderDetails = mongoose.model('orderDetails', OrderDetailsSchema);
