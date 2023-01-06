@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { GetPaymentStatus } from "../api";
+import { GetPayment } from "../api";
 import { GetBalance } from "../../Profile/api";
 
 const PaymentItem = (props) => {
@@ -8,7 +8,7 @@ const PaymentItem = (props) => {
     const [error, setError] = useState({});
 
     const onClickRecheckHandler = () => {
-        GetPaymentStatus(props.id)
+        GetPayment(localStorage.getItem("uid"), props.id)
         .then(res => {
             setStatus(res.data.data.status);
 
@@ -18,7 +18,7 @@ const PaymentItem = (props) => {
                 setError({ type: "Error", message: err.response.message });
             }); 
 
-            window.location.reload();
+            //window.location.reload();
         })
         .catch(err => {
             setError({ type: "Error", message: err.response.message });

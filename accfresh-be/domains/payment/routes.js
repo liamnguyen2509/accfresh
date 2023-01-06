@@ -102,14 +102,4 @@ router.post('/pm', async (req, res) => {
     }
 });
 
-router.post('/status', async (req, res) => {
-    try {
-        const { paymentId } = req.body;
-        const payment = await getPaymentById(null, paymentId);
-        res.status(200).json(responseJSON('S', 'Get Payment successful.', payment));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
-});
-
 module.exports = router;
