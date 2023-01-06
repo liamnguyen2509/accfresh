@@ -137,12 +137,7 @@ const getLastedPayment = async () => {
 }
 
 const getPaymentById = async (userId, paymentId) => {
-    let payment;
-    if (userId === null) {
-        payment = await Payment.findOne({ paymentId: paymentId });
-    } else {
-        payment = await Payment.findOne({ user: userId, paymentId: paymentId });
-    }
+    const payment = await Payment.findOne({ user: userId, paymentId: paymentId });
 
     if (payment.isDeposit) {
         return payment;
@@ -153,27 +148,31 @@ const getPaymentById = async (userId, paymentId) => {
             }, { timeout: 5000, headers: { 'Content-Type': 'multipart/form-data', "Accept-Encoding": "gzip,deflate,compress" } })
             .then((response) => response.data)
             .catch((err) => { throw Error(err.message) });
-        
+       
         payment.status = paymentStatus.status;
         await payment.save().catch((err) => {
             throw Error("Get Payment failed.");
         });
     
-        if (paymentStatus.status === 'done') {
-            payment.isDeposit = true;
-            await payment.save().catch((err) => {
-                throw Error("Update Payment failed.");
-            });
-    
-            const user = await User.findById(userId);
-            const wallet = await Wallet.findById(user.wallet._id);
-            
-            wallet.previousBalance = wallet.balance;
-            wallet.balance = parseFloat(wallet.balance) + parseFloat(payment.paymentAmount);
-            
-            await wallet.save().catch((err) => {
-                throw Error("Update Wallet failed.");
-            });
+        if (paymentStatus.status === 'onhold') {
+            throw Error("Your request infomation not correct.");
+        } else {
+            if (paymentStatus.status === 'done') {
+                payment.isDeposit = true;
+                await payment.save().catch((err) => {
+                    throw Error("Update Payment failed.");
+                });
+        
+                const user = await User.findById(userId);
+                const wallet = await Wallet.findById(user.wallet._id);
+                
+                wallet.previousBalance = wallet.balance;
+                wallet.balance = parseFloat(wallet.balance) + parseFloat(payment.paymentAmount);
+                
+                await wallet.save().catch((err) => {
+                    throw Error("Update Wallet failed.");
+                });
+            }
         }
     
         return payment;
