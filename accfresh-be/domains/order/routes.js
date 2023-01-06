@@ -41,8 +41,8 @@ router.post('/byUser', async (req, res) => {
     userAuthVerification(authorization)
     .then(async () => { 
         try {
-            const { userId } = req.body;
-            const orders = await getOrdersByUser(userId);
+            const { userId, limit } = req.body;
+            const orders = await getOrdersByUser(userId, limit);
             res.status(200).json(responseJSON('S', 'Get Orders successful.', orders));
         } catch (e) {
             res.status(400).json(responseJSON('SWR', e.message));

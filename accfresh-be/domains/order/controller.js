@@ -37,11 +37,20 @@ const getOrders = async (search, page, pageSize) => {
     return result;
 }
 
-const getOrdersByUser = async (userId) => {
+const getOrdersByUser = async (userId, limit) => {
     const buyer = await User.findById(userId);
-    const orders = await OrderDetails.find({ 'order.buyer': buyer.email })                                
+    let orders;
+
+    if (limit) {
+        orders = await OrderDetails.find({ 'order.buyer': buyer.email })                                
+                                    .populate({ path: 'product', select: 'name' })
+                                    .sort({ createdAt: -1 })
+                                    .limit(limit);
+    } else {
+        orders = await OrderDetails.find({ 'order.buyer': buyer.email })                                
                                     .populate({ path: 'product', select: 'name' })
                                     .sort({ createdAt: -1 });
+    }
     
     return orders.map(orderDetails => {
         return {

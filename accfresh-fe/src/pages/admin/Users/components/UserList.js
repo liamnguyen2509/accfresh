@@ -119,6 +119,7 @@ const UserList = () => {
                                 return (
                                     <UserItem 
                                         key={user._id}
+                                        id={user._id}
                                         order={orderingStartRow.current}
                                         username={user.username}
                                         email={user.email}

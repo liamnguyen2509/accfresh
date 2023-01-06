@@ -34,9 +34,9 @@ router.post('/byUser', async (req, res) => {
     userAuthVerification(authorization)
     .then(async () => { 
         try {
-            const { userId } = req.body;
-            const payment = await getPaymentsByUser(userId);
-            res.status(200).json(responseJSON('S', 'Get Payments successful.', payment));
+            const { userId, limit } = req.body;
+            const payments = await getPaymentsByUser(userId, limit);
+            res.status(200).json(responseJSON('S', 'Get Payments successful.', payments));
         } catch (e) {
             res.status(400).json(responseJSON('SWR', e.message));
         }

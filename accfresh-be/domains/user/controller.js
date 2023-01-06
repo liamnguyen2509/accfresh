@@ -84,4 +84,9 @@ const getUsers = async (search, page, pageSize) => {
     return result;
 }
 
-module.exports = { validateUser, authenticateUser, registerUser, GetBalance, getUsers }
+const getUserById = async (userId) => {
+    const user = await User.findById(userId).populate('wallet');
+    return user;
+}
+
+module.exports = { validateUser, authenticateUser, registerUser, GetBalance, getUsers, getUserById }

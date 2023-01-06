@@ -1,5 +1,5 @@
 // domain functions
-const { validateUser, authenticateUser, registerUser, GetBalance, getUsers } = require('./controller');
+const { validateUser, authenticateUser, registerUser, GetBalance, getUsers, getUserById } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
@@ -20,6 +20,21 @@ router.get('/', async (req, res) => {
         try {
             const users = await getUsers(search.toUpperCase(), page, pageSize);
             res.status(200).json(responseJSON('S', 'Get Users successful.', users));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
+});
+
+router.post('/byId', async(req, res) => {
+    let { authorization } = req.headers;
+    const { userId } = req.body;
+    
+    userAuthVerification(authorization)
+    .then(async () => {
+        try {
+            const user = await getUserById(userId);
+            res.status(200).json(responseJSON('S', "Get User successful.", user));
         } catch (e) {
             res.status(400).json(responseJSON('SWR', e.message));
         }
