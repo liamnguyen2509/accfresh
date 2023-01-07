@@ -8,10 +8,11 @@ import CartContext from "../../../../store/cartContext";
 const OrderSummary = () => {
     const cartCtx = useContext(CartContext);
     const navigate = useNavigate();
-
+    const [isDisable, setIsDisable] = useState(false);
     const [error, setError] = useState({});
 
     const onPurchaseHandler = () => {
+        setIsDisable(true);
         SubmitOrder({
             buyerEmail: localStorage.getItem("email"),
             totalAmount: cartCtx.totalAmount.toFixed(2),
@@ -31,6 +32,7 @@ const OrderSummary = () => {
             }
         })
         .catch(err => {
+            setIsDisable(false);
             setError({ type: "Error", message: err.response.data.message });
         });
     }
@@ -58,7 +60,7 @@ const OrderSummary = () => {
                         </div>
                     </li>
                 </ul>
-                {cartCtx.items.length > 0 && <button className="btn-primary-1 heading-SB" style={{ textAlign: "center", width: "100%" }} onClick={onPurchaseHandler}> Make Purchase </button>}
+                {cartCtx.items.length > 0 && <button className="btn-primary-1 heading-SB" style={{ textAlign: "center", width: "100%" }} onClick={onPurchaseHandler} disabled={isDisable}> Make Purchase </button>}
                 <p className="text heading-S" style={{ color: "orange", padding: "20px 0 0 0", textAlign: "center" }}>{error && error.message}</p>
             </div>
         </div>
