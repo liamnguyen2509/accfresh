@@ -5,6 +5,9 @@ const { newAuthToken } = require('../../util/jwt');
 // models
 const User = require('./models/user');
 const Wallet = require('./models/wallet');
+const Order = require('../order/models/order');
+const OrderDetails = require('../order/models/orderDetails');
+const Payment = require('../payment/models/payment');
 
 const validateUser = async (email, password) => {
     var emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
@@ -72,11 +75,14 @@ const GetBalance = async (userId) => {
 
 const getUsers = async (search, page, pageSize) => {
     const skip = (page - 1) * pageSize;
-    const users = await User.find({ $or: [{ username: { $regex: search } }, { email: { $regex: search } }]})
+    const users = await User.find({ $or: [{ username: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }]})
                             .sort({ createdAt: -1 }).populate("wallet").skip(skip).limit(pageSize);
     
     const totalRows = await User.countDocuments();
     const result = {
+        startRecord: skip + 1,
+        endRecord: skip + parseInt(users.length),
+        totalRecords: totalRows,
         totalPages: Math.ceil(totalRows/pageSize),
         users: users
     }
@@ -89,4 +95,18 @@ const getUserById = async (userId) => {
     return user;
 }
 
-module.exports = { validateUser, authenticateUser, registerUser, GetBalance, getUsers, getUserById }
+const deleteUser = async (userId) => {
+    const user = await User.findById(userId).populate('wallet');
+    // delete wallet
+    await Wallet.findOneAndDelete({ _id: user.wallet._id });
+    // delete orders
+    await Order.findOneAndDelete({ buyer: userId}).then(doc => {
+        OrderDetails.deleteMany({ _id: { $in: doc.orderDetails }});
+    });
+    // delete payments
+    await Payment.deleteMany({ user: userId });
+    // delete user
+    await user.deleteOne();
+}
+
+module.exports = { validateUser, authenticateUser, registerUser, GetBalance, getUsers, getUserById, deleteUser }

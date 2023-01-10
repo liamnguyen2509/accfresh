@@ -2,21 +2,24 @@ import React, { useEffect, useRef, useState } from "react";
 import Moment from 'moment';
 
 import UserItem from "./UserItem";
+import ConfirmModal from "./ConfirmModal";
 
-import { GetUsers } from "../api";
+import { GetUsers, RemoveUser } from "../api";
 
 const UserList = () => {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [totalPages, setTotalPage] = useState(1);
     const currentPage = useRef(1);
-    const orderingStartRow = useRef(0);
     const [paging, setPaging] = useState({
         page: 1,
         pageSize: 20,
+        totalRecords: 0,
+        totalPages: 1,
         isPrev: false,
         isNext: false
     });
+    const [isRemove, setIsRemove] = useState(false);
+    const [userRemoving, setUserRemoving] = useState();
     const [error, setError] = useState({});
 
     const onSearchHandler = (e) => {
@@ -26,37 +29,48 @@ const UserList = () => {
     }
 
     const onPageChangeHandler = (e) => {
-        if (e.target.value === "0" || isNaN(e.target.value) || e.target.value > totalPages) {
+        if (e.target.value === "0" || isNaN(e.target.value) || e.target.value > paging.totalPages) {
             setPaging({ ...paging, page: currentPage.current });
         } else {
             if (e.target.value !== "") {
                 currentPage.current = e.target.value;
-                if (currentPage.current === 1) {
-                    setPaging({ ...paging, page: currentPage.current, isPrev: false });
-                } else {
-                    setPaging({ ...paging, page: currentPage.current });
-                }
+                const canPrev = currentPage.current === 1 ? false : true;
+                const canNext = currentPage.current >= paging.totalPages ? false : true;
+                setPaging({ ...paging, page: currentPage.current, isPrev: canPrev, isNext: canNext });
             }
         }
     } 
 
     const onPrevHandler = () => {
-        if (currentPage.current <= 1) {
-            setPaging({ ...paging, page: 1, isPrev: false, isNext: totalPages > 1 ? true : false });
-        } else {
-            currentPage.current--;
-            setPaging({ ...paging, page: currentPage.current });
-        }
+        if (currentPage.current <= 1) currentPage.current = 1; 
+        
+        currentPage.current--;
+        const canPrev = currentPage.current === 1 ? false : true;
+        setPaging({ ...paging, page: currentPage.current, isPrev: canPrev, isNext: true });
     }
 
     const onNextHandler = () => {
         currentPage.current++;
+        const canNext = currentPage.current === paging.totalPages ? false : true;
+        setPaging({ ...paging, page: currentPage.current, isPrev: true, isNext: canNext });
+    }
 
-        if (currentPage.current === totalPages) {
-            setPaging({ ...paging, isPrev: true, isNext: false });
-        } else {
-            setPaging({ ...paging, page: currentPage.current, isPrev: true });
-        }
+    const onConfirmRemoveHandler = (userId) => {
+        setIsRemove(true);
+        const userRemoving = users.find(user => user._id === userId);
+        setUserRemoving({ id: userId, name: userRemoving.email });
+    }
+
+    const onCloseModalHandler = () => {
+        setIsRemove(false);
+    }
+
+    const onRemoveHandler = () => {
+        RemoveUser(userRemoving.id)
+        .then(res => {
+            if (res.data.type === "Success") setIsRemove(false);
+        })
+        .catch(err => { setError({ type: "Error", message: err.response.data.message }); })
     }
 
     useEffect(() => {
@@ -65,15 +79,20 @@ const UserList = () => {
             setUsers(res.data.data.users);
 
             if (res.data.data.totalPages > 1) { 
-                setPaging({ ...paging, isNext: true }); 
+                const canNext = res.data.data.totalRecords <= paging.pageSize 
+                            || res.data.data.endRecord < paging.pageSize ? false : true;
+                setPaging({ ...paging, 
+                            startRecord: res.data.data.startRecord,
+                            endRecord: res.data.data.endRecord,
+                            totalPages: res.data.data.totalPages, 
+                            totalRecords: res.data.data.totalRecords, 
+                            isNext: canNext }); 
             };
-            setTotalPage(res.data.data.totalPages);
-            orderingStartRow.current = currentPage.current === 1 ? 0 : (currentPage.current - 1) * paging.pageSize;
         })
         .catch(err => {
             setError({ type: "Error", message: err.response.data.message });
         });
-    }, [paging.page, searchTerm]);
+    }, [paging.page, searchTerm, isRemove]);
 
     const tableCartStyle = {
         backgroundColor: "rgba(210,130,240, 0.3) !important",
@@ -89,12 +108,13 @@ const UserList = () => {
                     </div>
                 </div>
                 <div className="paging" style={{ width: "50%", display: "flex", justifyContent: "right" }}>
+                    <p className="heading-SB" style={{ marginRight: "15px", padding: "14px 0px 14px 24px", color: "#FFF" }}>Records: {paging.startRecord} - {paging.endRecord} / {paging.totalRecords} | Page:</p>
+                    <input type="text" className="input heading-SB" style={{ width: "10%", padding: "14px", textAlign: "center", marginRight: "10px" }} 
+                        value={paging.page} onChange={onPageChangeHandler} />
                     <button className="btn-primary-1 heading-SB" style={{ width: "fit-content", marginRight: "10px" }} 
                         onClick={onPrevHandler}
                         disabled={!paging.isPrev}>Prev</button>
-                    <input type="text" className="input heading-SB" style={{ width: "10%", padding: "14px", textAlign: "center" }} 
-                        value={paging.page} onChange={onPageChangeHandler} />
-                    <button className="btn-primary-1 heading-SB" style={{ width: "fit-content", marginLeft: "10px" }} 
+                    <button className="btn-primary-1 heading-SB" style={{ width: "fit-content" }} 
                         onClick={onNextHandler}
                         disabled={!paging.isNext}>Next</button>
                 </div>
@@ -103,7 +123,6 @@ const UserList = () => {
                 <table className="table" style={tableCartStyle}>
                     <thead>
                         <tr>
-                            <th>#</th>
                             <th>USERNAME</th>
                             <th>EMAIL</th>
                             <th>BALANCE</th>
@@ -115,22 +134,22 @@ const UserList = () => {
                         {
                             users.length > 0 &&
                             users.map((user, index) => {
-                                orderingStartRow.current = orderingStartRow.current + 1;
                                 return (
                                     <UserItem 
                                         key={user._id}
                                         id={user._id}
-                                        order={orderingStartRow.current}
                                         username={user.username}
                                         email={user.email}
                                         balance={user.wallet.balance.$numberDecimal}
                                         createdDate={Moment(user.createdAt).format('D-MMM-yyyy h:mm A')}
+                                        onConfirm={onConfirmRemoveHandler}
                                     />
                                 )
                             })
                         }
                     </tbody>
                 </table>
+                { isRemove && <ConfirmModal name={userRemoving.name} onClose={onCloseModalHandler} onRemove={onRemoveHandler} /> }
             </div>
         </>
     );
