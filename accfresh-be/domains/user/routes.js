@@ -1,5 +1,5 @@
 // domain functions
-const { validateUser, authenticateUser, registerUser, GetBalance, getUsers, getUserById } = require('./controller');
+const { validateUser, authenticateUser, registerUser, GetBalance, getUsers, getUserById, deleteUser } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
@@ -81,6 +81,21 @@ router.post('/balance', async(req, res) => {
         try {
             const balance = await GetBalance(userId);
             res.status(200).json(responseJSON('S', "Get User's balance successful.", balance));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
+});
+
+router.post('/delete', async (req, res) => {
+    const { authorization } = req.headers;
+    const { userId } = req.body;
+
+    adminAuthVerification(authorization)
+    .then(async () => {
+        try {
+            await deleteUser(userId);
+            res.status(200).json(responseJSON('S', 'Delete User successful.'));
         } catch (e) {
             res.status(400).json(responseJSON('SWR', e.message));
         }
