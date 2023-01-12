@@ -68,9 +68,16 @@ const registerUser = async (username, email, password) => {
     return registedUser;
 }
 
-const GetBalance = async (userId) => {
+const getBalance = async (userId) => {
     const user = await User.findById(userId).populate('wallet');
     return user.wallet.balance;
+}
+
+const updateBalance = async (userId, newBalance) => {
+    const user = await User.findById(userId).populate('wallet');
+    const wallet = await Wallet.findByIdAndUpdate(user.wallet._id, { balance: newBalance }, { new: true, useFindAndModify: false });
+
+    return wallet.balance;
 }
 
 const getUsers = async (search, page, pageSize) => {
@@ -109,4 +116,4 @@ const deleteUser = async (userId) => {
     await user.deleteOne();
 }
 
-module.exports = { validateUser, authenticateUser, registerUser, GetBalance, getUsers, getUserById, deleteUser }
+module.exports = { validateUser, authenticateUser, registerUser, getBalance, getUsers, getUserById, deleteUser, updateBalance }
