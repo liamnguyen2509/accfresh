@@ -181,13 +181,11 @@ const getPaymentById = async (userId, paymentId) => {
 
 const getPaymentsByUser = async (userId, limit) => {
     let payments;
-    console.log(userId);
     if (limit) {
         payments = await Payment.find({ user: userId }).sort({ updatedAt: -1 }).limit(limit);
     } else {
         payments = await Payment.find({ user: userId }).sort({ updatedAt: -1 });
     }
-    console.log(payments);
     return payments;
 }
 

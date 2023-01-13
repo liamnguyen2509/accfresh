@@ -102,6 +102,11 @@ const getUserById = async (userId) => {
     return user;
 }
 
+const getToken = async (userId) => {
+    const user = await User.findById(userId);
+    return user.authToken;
+}
+
 const deleteUser = async (userId) => {
     const user = await User.findById(userId).populate('wallet');
     // delete wallet
@@ -116,4 +121,12 @@ const deleteUser = async (userId) => {
     await user.deleteOne();
 }
 
-module.exports = { validateUser, authenticateUser, registerUser, getBalance, getUsers, getUserById, deleteUser, updateBalance }
+const updatePassword = async (userId, newPassword) => {
+    const newToken = newAuthToken();
+    const newPasswordHash = sha256(newPassword);
+    await User.findByIdAndUpdate(userId, { password: newPasswordHash, authToken: newToken }, { new: true, useFindAndModify: false });
+
+    return newToken;
+}
+
+module.exports = { validateUser, authenticateUser, registerUser, getBalance, getUsers, getUserById, deleteUser, updateBalance, updatePassword, getToken }
