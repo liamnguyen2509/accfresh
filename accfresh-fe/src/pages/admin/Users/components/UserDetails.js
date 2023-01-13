@@ -4,14 +4,52 @@ import Moment from 'moment';
 
 import Layout from "../../../../components/AdminLayout/Layout";
 import UserPayments from "./UserPayments";
+import BalanceModal from "./ChangeBalanceModal";
+import ChangePasswordModal from "./ChangePasswordModal";
 
-import { GetUser } from "../api";
+import { GetUser, UpdateBalance, UpdatePassword } from "../api";
 import UserOrders from "./UserOrders";
 
 const UserDetails = () => {
     const [user, setUser] = useState({});
+    const [isUpdateBalance, setIsUpdateBalance] = useState(false);
+    const [isChangePassword, setIsChangePassword] = useState(false);
     const [error, setError] = useState({});
     const { userId } = useParams();
+
+    const onEditBalanceHandler = () => {
+        setIsUpdateBalance(true);
+    }
+
+    const onCloseUpdateBalanceHandler = () => {
+        setIsUpdateBalance(false);
+    }
+
+    const onChangePasswordHandler = () => {
+        setIsChangePassword(true);
+    }
+
+    const onClosePasswordHandler = () => {
+        setIsChangePassword(false);
+    }
+
+    const onUpdateBalanceHandler = (newBalance) => {
+        UpdateBalance(userId, newBalance)
+        .then(res => {
+            setUser({ ...user, balance: res.data.data.$numberDecimal });
+            setIsUpdateBalance(false);
+        })
+        .catch(err => {
+            setError({ type: "Error", message: err.response.message });
+        });
+    }
+
+    const onUpdatePasswordHandler = (newPassword) => {
+        UpdatePassword(userId, newPassword)
+        .catch(err => {
+            setError({ type: "Error", message: err.response.message });
+        });
+    }
 
     useEffect(() => {
         GetUser(userId)
@@ -40,10 +78,10 @@ const UserDetails = () => {
                                     <h4 className="name heading-h4">{user.email}</h4>
                                     <div className="copy-icon-otr">
                                         <p className="text heading-M">${user.balance}</p>
-                                        <i className="ri-edit-box-line copy-icon"></i>
+                                        <i className="ri-edit-box-line copy-icon" onClick={onEditBalanceHandler}></i>
                                     </div>
                                     <div className="action">
-                                        <button className="btn-primary-1 heading-SB" style={{ width: "100%" }}>Change Password</button>
+                                        <button className="btn-primary-1 heading-SB" style={{ width: "100%" }} onClick={onChangePasswordHandler}>Change Password</button>
                                     </div>
                                     <p className="member heading-S">Member since {user.createdDate}</p>
                                 </div>
@@ -60,6 +98,8 @@ const UserDetails = () => {
                     </div>
                 </div>
             </div>
+            { isUpdateBalance && <BalanceModal balance={user.balance} onClose={onCloseUpdateBalanceHandler} onUpdate={onUpdateBalanceHandler} /> }
+            { isChangePassword && <ChangePasswordModal onClose={onClosePasswordHandler} onUpdate={onUpdatePasswordHandler} /> }
         </Layout>
     );
 }

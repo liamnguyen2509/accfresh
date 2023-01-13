@@ -1,5 +1,5 @@
 // domain functions
-const { validateUser, authenticateUser, registerUser, GetBalance, getUsers, getUserById, deleteUser } = require('./controller');
+const { validateUser, authenticateUser, registerUser, getBalance, updateBalance, getUsers, getUserById, deleteUser, updatePassword, getToken } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
@@ -79,8 +79,23 @@ router.post('/balance', async(req, res) => {
     userAuthVerification(authorization)
     .then(async () => {
         try {
-            const balance = await GetBalance(userId);
+            const balance = await getBalance(userId);
             res.status(200).json(responseJSON('S', "Get User's balance successful.", balance));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
+});
+
+router.put('/balance', async(req, res) => {
+    let { authorization } = req.headers;
+    const { userId, balance } = req.body;
+    
+    adminAuthVerification(authorization)
+    .then(async () => {
+        try {
+            const newBalance = await updateBalance(userId, balance);
+            res.status(200).json(responseJSON('S', "Update User's balance successful.", newBalance));
         } catch (e) {
             res.status(400).json(responseJSON('SWR', e.message));
         }
@@ -96,6 +111,36 @@ router.post('/delete', async (req, res) => {
         try {
             await deleteUser(userId);
             res.status(200).json(responseJSON('S', 'Delete User successful.'));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
+});
+
+router.put('/password', async(req, res) => {
+    let { authorization } = req.headers;
+    const { userId, password } = req.body;
+    
+    adminAuthVerification(authorization)
+    .then(async () => {
+        try {
+            const token = await updatePassword(userId, password);
+            res.status(200).json(responseJSON('S', "Update User's balance successful.", token));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
+});
+
+router.post('/token', async(req, res) => {
+    let { authorization } = req.headers;
+    const { userId } = req.body;
+    
+    userAuthVerification(authorization)
+    .then(async () => {
+        try {
+            const token = await getToken(userId);
+            res.status(200).json(responseJSON('S', "Get User's token successful.", token));
         } catch (e) {
             res.status(400).json(responseJSON('SWR', e.message));
         }

@@ -19,13 +19,18 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/byCode', async (req, res) => {
-    try {
-        const { userId, paymentId } = req.body;
-        const payment = await getPaymentById(userId, paymentId);
-        res.status(200).json(responseJSON('S', 'Get Payment successful.', payment));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
+    let { authorization } = req.headers;
+
+    userAuthVerification(authorization)
+    .then(async () => { 
+        try {
+            const { userId, paymentId } = req.body;
+            const payment = await getPaymentById(userId, paymentId);
+            res.status(200).json(responseJSON('S', 'Get Payment successful.', payment));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 router.post('/byUser', async (req, res) => {

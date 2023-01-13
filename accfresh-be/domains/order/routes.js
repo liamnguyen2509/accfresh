@@ -51,13 +51,18 @@ router.post('/byUser', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    let { authorization } = req.headers;
     const requestData = req.body;
-    try {
-        const order = await submitOrder(requestData);
-        res.status(200).json(responseJSON('S', 'Order placed successful.', order));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
+
+    userAuthVerification(authorization)
+    .then(async () => { 
+        try {
+            const order = await submitOrder(requestData);
+            res.status(200).json(responseJSON('S', 'Order placed successful.', order));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 module.exports = router;

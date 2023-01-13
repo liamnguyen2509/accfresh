@@ -1,6 +1,6 @@
 import React from "react";
 
-import classes from './ConfirmModal.module.css';
+import classes from './Modal.module.css';
 
 const ConfirmModal = (props) => {
 
@@ -13,7 +13,7 @@ const ConfirmModal = (props) => {
     }
 
     return(
-        <div className={`${classes["confirm-modal"]} ${classes["confirm-modal-open"]}`}>
+        <div className={`${classes["confirm-modal"]} ${classes["modal-open"]}`}>
             <div className={classes.content}>
                 <div className={classes.header}>
                     <h4 className="heading-h4">Confirm</h4>
