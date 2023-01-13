@@ -8,7 +8,6 @@ const AccountItem = (props) => {
 
     return (
         <tr style={{ verticalAlign: "middle" }}>
-            <td>{props.order}</td>
             <td>{props.product}</td>
             <td>{props.content}</td>
             <td>{props.isSold ? <span style={{ color: "green", fontWeight: "bold" }}>SOLD</span> : ""}</td>

@@ -10,8 +10,8 @@ const getOrders = async (search, page, pageSize) => {
     const skip = (page - 1) * pageSize;
 
     const orders = await OrderDetails.find({ $or: [
-                                                    { 'order.buyer': { $regex: search } },
-                                                    { 'order._id': { $regex: search } }
+                                                    { 'order.buyer': { $regex: search, $options: 'i' } },
+                                                    { 'order._id': { $regex: search, $options: 'i' } }
                                                 ]})                                
                                      .populate({ path: 'product', select: 'name' })
                                      .sort({ createdAt: -1 })
@@ -20,6 +20,9 @@ const getOrders = async (search, page, pageSize) => {
 
     const totalRows = await OrderDetails.countDocuments();
     const result = {
+        startRecord: skip + 1,
+        endRecord: skip + parseInt(orders.length),
+        totalRecords: totalRows,
         totalPages: Math.ceil(totalRows/pageSize),
         orders: orders.map(orderDetails => {
             return {
