@@ -8,12 +8,12 @@ import { GetOrders } from "../api";
 const OrderList = () => {
     const [orders, setOrders] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [totalPages, setTotalPage] = useState(1);
     const currentPage = useRef(1);
-    const orderingStartRow = useRef(0);
     const [paging, setPaging] = useState({
         page: 1,
         pageSize: 20,
+        totalRecords: 0,
+        totalPages: 1,
         isPrev: false,
         isNext: false
     });
@@ -26,40 +26,31 @@ const OrderList = () => {
     }
 
     const onPageChangeHandler = (e) => {
-        console.log(e.target.value);
-        console.log(totalPages);
-        if (e.target.value === "0" || isNaN(e.target.value) || e.target.value > totalPages) {
-            console.log("aaaaaa")
+        if (e.target.value === "0" || isNaN(e.target.value) || e.target.value > paging.totalPages) {
             setPaging({ ...paging, page: currentPage.current });
         } else {
             if (e.target.value !== "") {
                 currentPage.current = e.target.value;
-                if (currentPage.current === 1) {
-                    setPaging({ ...paging, page: currentPage.current, isPrev: false });
-                } else {
-                    setPaging({ ...paging, page: currentPage.current });
-                }
+                const canPrev = currentPage.current === 1 ? false : true;
+                const canNext = currentPage.current >= paging.totalPages ? false : true;
+                setPaging({ ...paging, page: currentPage.current, isPrev: canPrev, isNext: canNext });
             }
         }
     } 
 
     const onPrevHandler = () => {
-        if (currentPage.current <= 1) {
-            setPaging({ ...paging, page: 1, isPrev: false, isNext: totalPages > 1 ? true : false });
-        } else {
-            currentPage.current--;
-            setPaging({ ...paging, page: currentPage.current });
-        }
+        if (currentPage.current <= 1) currentPage.current = 1; 
+        
+        currentPage.current--;
+        const canPrev = currentPage.current === 1 ? false : true;
+        setPaging({ ...paging, page: currentPage.current, isPrev: canPrev, isNext: true });
     }
 
     const onNextHandler = () => {
         currentPage.current++;
-
-        if (currentPage.current === totalPages) {
-            setPaging({ ...paging, isPrev: true, isNext: false });
-        } else {
-            setPaging({ ...paging, page: currentPage.current, isPrev: true });
-        }
+        console.log(paging.totalPages);
+        const canNext = currentPage.current === paging.totalPages ? false : true;
+        setPaging({ ...paging, page: currentPage.current, isPrev: true, isNext: canNext });
     }
 
     useEffect(() => {
@@ -68,13 +59,19 @@ const OrderList = () => {
             setOrders(res.data.data.orders);
 
             if (res.data.data.totalPages > 1) { 
-                setPaging({ ...paging, isNext: true }); 
+                const canNext = res.data.data.totalRecords <= paging.pageSize 
+                            || res.data.data.endRecord < paging.pageSize
+                            || res.data.data.totalRecords === res.data.data.endRecord ? false : true;
+                setPaging({ ...paging, 
+                    startRecord: res.data.data.startRecord,
+                    endRecord: res.data.data.endRecord,
+                    totalPages: res.data.data.totalPages, 
+                    totalRecords: res.data.data.totalRecords, 
+                    isNext: canNext }); 
             };
-            setTotalPage(res.data.data.totalPages);
-            orderingStartRow.current = currentPage.current === 1 ? 0 : (currentPage.current - 1) * paging.pageSize;
         })
         .catch(err => {
-            setError({ type: "Error", message: err.response.data.message });
+            setError({ type: "Error", message: err.response.message });
         });
     }, [paging.page, searchTerm]);
 
@@ -92,12 +89,13 @@ const OrderList = () => {
                     </div>
                 </div>
                 <div className="paging" style={{ width: "50%", display: "flex", justifyContent: "right" }}>
+                    <p className="heading-SB" style={{ marginRight: "15px", padding: "14px 0px 14px 24px", color: "#FFF" }}>Records: {paging.startRecord} - {paging.endRecord} / {paging.totalRecords} | Page:</p>
+                    <input type="text" className="input heading-SB" style={{ width: "10%", padding: "14px", textAlign: "center", marginRight: "10px" }} 
+                        value={paging.page} onChange={onPageChangeHandler} />
                     <button className="btn-primary-1 heading-SB" style={{ width: "fit-content", marginRight: "10px" }} 
                         onClick={onPrevHandler}
                         disabled={!paging.isPrev}>Prev</button>
-                    <input type="text" className="input heading-SB" style={{ width: "10%", padding: "14px", textAlign: "center" }} 
-                        value={paging.page} onChange={onPageChangeHandler} />
-                    <button className="btn-primary-1 heading-SB" style={{ width: "fit-content", marginLeft: "10px" }} 
+                    <button className="btn-primary-1 heading-SB" style={{ width: "fit-content" }} 
                         onClick={onNextHandler}
                         disabled={!paging.isNext}>Next</button>
                 </div>
@@ -106,7 +104,6 @@ const OrderList = () => {
                 <table className="table" style={tableCartStyle}>
                     <thead>
                         <tr>
-                            <th>#</th>
                             <th>ID</th>
                             <th>BUYER</th>
                             <th>PRODUCT</th>
@@ -120,12 +117,10 @@ const OrderList = () => {
                         {
                             orders.length > 0 &&
                             orders.map((order, index) => {
-                                orderingStartRow.current = orderingStartRow.current + 1;
                                 return (
                                     <OrderItem 
                                         key={index}
                                         id={order.id}
-                                        order={orderingStartRow.current}
                                         buyer={order.buyer}
                                         orderDetailId={order.orderDetailId}
                                         product={order.product}

@@ -6,10 +6,13 @@ const Product = require('../product/model');
 
 const getAccounts = async (search, page, pageSize) => {
     const skip = (page - 1) * pageSize;
-    const accounts = await Account.find({ content: { $regex: search } }).sort({ createdAt: -1 }).populate("product").skip(skip).limit(pageSize);
+    const accounts = await Account.find({ content: { $regex: search, $options: 'i' } }).sort({ createdAt: -1 }).populate("product").skip(skip).limit(pageSize);
     
     const totalRows = await Account.countDocuments();
     const result = {
+        startRecord: skip + 1,
+        endRecord: skip + parseInt(accounts.length),
+        totalRecords: totalRows,
         totalPages: Math.ceil(totalRows/pageSize),
         accounts: accounts
     }

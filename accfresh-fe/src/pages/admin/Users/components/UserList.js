@@ -80,7 +80,8 @@ const UserList = () => {
 
             if (res.data.data.totalPages > 1) { 
                 const canNext = res.data.data.totalRecords <= paging.pageSize 
-                            || res.data.data.endRecord < paging.pageSize ? false : true;
+                            || res.data.data.endRecord < paging.pageSize
+                            || res.data.data.totalRecords === res.data.data.endRecord ? false : true;
                 setPaging({ ...paging, 
                             startRecord: res.data.data.startRecord,
                             endRecord: res.data.data.endRecord,

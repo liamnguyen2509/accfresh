@@ -23,7 +23,6 @@ const OrderItem = (props) => {
 
     return (
         <tr style={{ verticalAlign: "middle" }}>
-            <td>{props.order}</td>
             <td>{props.id.slice(-6).toUpperCase()}</td>
             <td>{props.buyer}</td>
             <td>{props.product}</td>
