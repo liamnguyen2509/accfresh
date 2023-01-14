@@ -5,9 +5,12 @@ import { GetBalance } from "../../Profile/api";
 
 const PaymentItem = (props) => {
     const [status, setStatus] = useState(props.status);
+    const [isDisableRecheck, setIsDisableRecheck] = useState(false);
     const [error, setError] = useState({});
 
     const onClickRecheckHandler = () => {
+        setIsDisableRecheck(true);
+
         GetPayment(localStorage.getItem("uid"), props.id)
         .then(res => {
             setStatus(res.data.data.status);
@@ -44,7 +47,7 @@ const PaymentItem = (props) => {
             <td>{props.payDate}</td>
             <td>
                 {props.status !== 'done' && props.status !== 'delete' &&
-                <button className={`btn-primary-1 heading-SB`} style={{ marginRight: "5px", padding: "5px 10px 5px 10px" }} onClick={onClickRecheckHandler}> Re-Check Status </button>}
+                <button className={`btn-primary-1 heading-SB`} style={{ marginRight: "5px", padding: "5px 10px 5px 10px" }} onClick={onClickRecheckHandler} disabled={isDisableRecheck}> Re-Check Status </button>}
             </td>
         </tr>
     );
