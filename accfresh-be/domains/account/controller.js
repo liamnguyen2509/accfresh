@@ -6,7 +6,12 @@ const Product = require('../product/model');
 
 const getAccounts = async (search, page, pageSize) => {
     const skip = (page - 1) * pageSize;
-    const accounts = await Account.find({ content: { $regex: search, $options: 'i' } }).sort({ createdAt: -1 }).populate("product").skip(skip).limit(pageSize);
+    const accounts = await Account.find({ content: { $regex: search, $options: 'i' } })
+                                    .populate({ path: 'product', select: 'name' })
+                                    .populate({ path: 'orderDetail', select: 'order.buyer.email' })
+                                    .sort({ createdAt: -1 })
+                                    .skip(skip)
+                                    .limit(pageSize);
     
     const totalRows = await Account.countDocuments();
     const result = {
@@ -71,7 +76,7 @@ const createAccounts = async (accounts) => {
 const deleteAccount = async (accountId) => {
     await Account.deleteOne({ _id: accountId }).catch((err) => {
         throw Error("Delete Account failed.");
-    });;
+    });
 }
 
 module.exports = { getAccounts, createAccounts, getAccountsByUser, getAccountsByOrderDetail, deleteAccount }

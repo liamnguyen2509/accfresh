@@ -9,7 +9,7 @@ const AccountItem = (props) => {
     return (
         <tr style={{ verticalAlign: "middle" }}>
             <td>{props.product}</td>
-            <td>{props.content}</td>
+            <td>{props.content.substring(0, 70)}...</td>
             <td>{props.isSold ? <span style={{ color: "green", fontWeight: "bold" }}>SOLD</span> : ""}</td>
             <td>{props.buyer}</td>
             <td>{props.isActive && !props.isSold

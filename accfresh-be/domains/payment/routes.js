@@ -1,21 +1,29 @@
 // domain functions
 const { getReceiver, getRate, deposit, requestPerfectMoney, getLastedPayment, getPaymentById,
-        getPaymentsByUser, getPayments, transferEvoucher } = require('./controller');
+        getPaymentsByUser, getPayments, transferEvoucher, deletePayment } = require('./controller');
 
 // utils
 const { responseJSON } = require('../../util/responseJSON');
-const { userAuthVerification } = require('../../util/jwt');
+const { userAuthVerification, adminAuthVerification } = require('../../util/jwt');
 
 const express = require('express');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-    try {
-        const payments = await getPayments();
-        res.status(200).json(responseJSON('S', 'Get Payments successful.', payments));
-    } catch (e) {
-        res.status(400).json(responseJSON('SWR', e.message));
-    }
+    let { authorization } = req.headers;
+    const search = req.query.search;
+    const page = req.query.page;
+    const pageSize = req.query.pageSize;
+
+    adminAuthVerification(authorization)
+    .then(async () => { 
+        try {
+            const payments = await getPayments(search.toUpperCase(), page, pageSize);
+            res.status(200).json(responseJSON('S', 'Get Payments successful.', payments));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 router.post('/byCode', async (req, res) => {
@@ -105,6 +113,21 @@ router.post('/pm', async (req, res) => {
     } catch (e) {
         res.status(400).json(responseJSON('SWR', e.message));
     }
+});
+
+router.post('/delete', async (req, res) => {
+    const { authorization } = req.headers;
+    const { paymentId } = req.body;
+
+    adminAuthVerification(authorization)
+    .then(async () => {
+        try {
+            await deletePayment(paymentId);
+            res.status(200).json(responseJSON('S', 'Delete Payment successful.'));
+        } catch (e) {
+            res.status(400).json(responseJSON('SWR', e.message));
+        }
+    });
 });
 
 module.exports = router;
