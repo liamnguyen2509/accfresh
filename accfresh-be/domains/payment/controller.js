@@ -189,9 +189,34 @@ const getPaymentsByUser = async (userId, limit) => {
     return payments;
 }
 
-const getPayments = async () => {
-    const payments = await Payment.find({}).sort({ updatedAt: -1 }).populate("user");
-    return payments;
+const getPayments = async (search, page, pageSize) => {
+    const skip = (page - 1) * pageSize;
+    const payments = await Payment.find({ $or: [
+                                            { 'paymentId': { $regex: search, $options: 'i' } },
+                                            { 'payeeAccount': { $regex: search, $options: 'i' } },
+                                            { 'payeeName': { $regex: search, $options: 'i' } },
+                                            { 'suggestedMemo': { $regex: search, $options: 'i' } },
+                                            { 'status': { $regex: search, $options: 'i' } }
+                                        ]})
+                                    .populate({ path: 'user', select: 'email' })
+                                    .sort({ updatedAt: -1 }).skip(skip).limit(pageSize);
+                                    
+    const totalRows = await Payment.countDocuments();
+    const result = {
+        startRecord: skip + 1,
+        endRecord: skip + parseInt(payments.length),
+        totalRecords: totalRows,
+        totalPages: Math.ceil(totalRows/pageSize),
+        payments: payments
+    }
+
+    return result;
 }
 
-module.exports = { getReceiver, getRate, deposit, requestPerfectMoney, getLastedPayment, getPaymentById, getPaymentsByUser, getPayments, transferEvoucher }
+const deletePayment = async (paymentId) => {
+    await Payment.findOneAndDelete({ paymentId: paymentId }).catch((err) => {
+        throw Error("Delete Payment failed.");
+    });
+}
+
+module.exports = { getReceiver, getRate, deposit, requestPerfectMoney, getLastedPayment, getPaymentById, getPaymentsByUser, getPayments, transferEvoucher, deletePayment }
