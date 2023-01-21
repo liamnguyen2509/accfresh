@@ -76,7 +76,7 @@ const submitOrder = async (order) => {
     console.log(`---Buyer has wallet is: ${buyer.wallet}`);
     console.log(`---Buyer has wallet less then 0: ${buyer.wallet.balance <= 0}`);
     console.log(`---Buyer has wallet not enough order: ${parseFloat(buyer.wallet.balance) < order.totalAmount}. with order amount is: ${order.totalAmount}`)
-    if (!buyer.wallet || parseFloat(buyer.wallet.balance) <= 0 || parseFloat(buyer.wallet.balance) < parseFloat(order.totalAmount)) { 
+    if (!buyer.wallet || parseFloat(buyer.wallet.balance) <= 0 || parseFloat(buyer.wallet.balance) < parseFloat(order.totalAmount) || buyer.wallet.balance === 'NaN') { 
         throw Error("Your wallet is out of balance."); 
     } else { 
         let inStock = true;
