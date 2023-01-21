@@ -97,6 +97,11 @@ const getUsers = async (search, page, pageSize) => {
     return result;
 }
 
+const getDangerousUsers = async () => {
+    const users = await User.find().populate("wallet").sort({ createdAt: -1 }).limit(100);
+    return users.filter(user => user.wallet && (parseFloat(user.wallet.balance) < 0 || isNaN(user.wallet.balance) || parseFloat(user.wallet.balance) > 1000)).slice(0, 15);
+}
+
 const getUserById = async (userId) => {
     const user = await User.findById(userId).populate('wallet');
     return user;
@@ -129,4 +134,4 @@ const updatePassword = async (userId, newPassword) => {
     return newToken;
 }
 
-module.exports = { validateUser, authenticateUser, registerUser, getBalance, getUsers, getUserById, deleteUser, updateBalance, updatePassword, getToken }
+module.exports = { validateUser, authenticateUser, registerUser, getBalance, getUsers, getUserById, deleteUser, updateBalance, updatePassword, getToken, getDangerousUsers }

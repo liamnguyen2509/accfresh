@@ -13,7 +13,7 @@ const NavbarMain = () => {
             <div className="container-fluid">
                 <div className="wrapper">
                     <div className="logo-otr">
-                        <a href="/" className="logo-a">
+                        <a href="/admin" className="logo-a">
                             <img className="logo-img" src={"/assets/img/brand-logo.png"} alt="brand-logo" />
                         </a>
                     </div>

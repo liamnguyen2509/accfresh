@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Moment from 'moment';
 
-import { GetUserPayments } from "../api";
+import { GetLastedPayments } from "./api";
 
-const UserPayments = (props) => {
+const LastedPayments = (props) => {
     const [payments, setPayments] = useState([]);
     const [error, setError] = useState({});
 
@@ -13,8 +13,8 @@ const UserPayments = (props) => {
     }
 
     useEffect(() => {
-        GetUserPayments(props.userId)
-        .then(res => setPayments(res.data.data))
+        GetLastedPayments()
+        .then(res => setPayments(res.data.data.payments))
         .catch(err => {
             setError({ type: "Error", message: err.response.message });
         });
@@ -58,4 +58,4 @@ const UserPayments = (props) => {
     );
 }
 
-export default UserPayments;
+export default LastedPayments;

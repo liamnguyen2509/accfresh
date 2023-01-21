@@ -5,13 +5,15 @@ const Order = require('./models/order');
 const OrderDetails = require('./models/orderDetails');
 const Product = require('../product/model');
 const Account = require('../account/model');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const getOrders = async (search, page, pageSize) => {
     const skip = (page - 1) * pageSize;
+    const searchId = ObjectId.isValid(search) ? ObjectId(search) : '';
 
     const orders = await OrderDetails.find({ $or: [
                                                     { 'order.buyer': { $regex: search, $options: 'i' } },
-                                                    { 'order._id': { $regex: search, $options: 'i' } }
+                                                    { 'order._id': searchId }
                                                 ]})                                
                                      .populate({ path: 'product', select: 'name' })
                                      .sort({ createdAt: -1 })
