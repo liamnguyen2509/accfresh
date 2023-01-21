@@ -4,6 +4,8 @@ const Admin = require('../admin/model');
 const User = require('../user/models/user');
 const Payment = require('./models/payment');
 const Wallet = require('../user/models/wallet');
+const Order = require('../order/models/order');
+const OrderDetails = require('../order/models/order');
 
 const EXTERNAL_ENDPOINT = require('./externalEndPoint');
 
@@ -149,32 +151,49 @@ const getPaymentById = async (userId, paymentId) => {
             .then((response) => response.data)
             .catch((err) => { throw Error(err.message) });
        
-        payment.status = paymentStatus.status;
-        await payment.save().catch((err) => {
-            throw Error("Get Payment failed.");
-        });
-    
-        if (paymentStatus.status === 'onhold') {
-            throw Error("Your request infomation not correct.");
-        } else {
-            if (paymentStatus.status === 'done') {
-                payment.isDeposit = true;
-                await payment.save().catch((err) => {
-                    throw Error("Update Payment failed.");
-                });
+        // check if user cheat payment to another bank account
+        const admin = await Admin.findOne({ email: 'domainbiit1@gmail.com' });
+        if (paymentStatus.toAccount.trim() === admin.bankAccount.trim()) {
+            payment.status = paymentStatus.status;
+            await payment.save().catch((err) => {
+                throw Error("Get Payment failed.");
+            });
         
-                const user = await User.findById(userId);
-                const wallet = await Wallet.findById(user.wallet._id);
-                
-                wallet.previousBalance = wallet.balance;
-                wallet.balance = parseFloat(wallet.balance) + parseFloat(payment.paymentAmount);
-                
-                await wallet.save().catch((err) => {
-                    throw Error("Update Wallet failed.");
-                });
+            if (paymentStatus.status === 'onhold') {
+                throw Error("Your request infomation not correct.");
+            } else {
+                if (paymentStatus.status === 'done') {
+                    payment.isDeposit = true;
+                    await payment.save().catch((err) => {
+                        throw Error("Update Payment failed.");
+                    });
+            
+                    const user = await User.findById(userId);
+                    const wallet = await Wallet.findById(user.wallet._id);
+                    
+                    wallet.previousBalance = wallet.balance;
+                    wallet.balance = parseFloat(wallet.balance) + parseFloat(payment.paymentAmount);
+                    
+                    await wallet.save().catch((err) => {
+                        throw Error("Update Wallet failed.");
+                    });
+                }
             }
+        } else {
+            const user = await User.findById(userId).populate('wallet');
+            // delete wallet
+            await Wallet.findOneAndUpdate({ _id: user.wallet._id }, { $set: { balance: 0 } });
+            // delete orders
+            await Order.findOneAndDelete({ buyer: userId}).then(doc => {
+                OrderDetails.deleteMany({ _id: { $in: doc.orderDetails }});
+            });
+
+            payment.status = 'Fuck You!!';
+            await payment.save().catch((err) => {
+                throw Error("Get Payment failed.");
+            });
         }
-    
+
         return payment;
     }
 }
