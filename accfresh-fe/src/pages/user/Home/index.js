@@ -6,10 +6,11 @@ import FeatureSection from "./components/Feature/FeatureSection";
 
 const Home = (props) => {
     return (
-        <Layout>
-            {/* <HeroSection /> */}
-            <FeatureSection />
-        </Layout>
+        // <Layout>
+        //     {/* <HeroSection /> */}
+        //     <FeatureSection />
+        // </Layout>
+        <h1 style={{textAlign: 'center', verticalAlign: 'middle', marginTop: '20%', color: '#fff'}}>Thank You for used my service</h1>
     ); 
 }
 
